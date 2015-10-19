@@ -31,6 +31,7 @@
 
 
 #This file mainly deals with color conversions, color transformations, and generating color scales.
+
 import re
 import colorsys
 
@@ -67,8 +68,6 @@ def is_hex(in_col):
 	Check whether an input string is a valid hex value.
 	Return True if it is, otherwise False.
 	'''
-	if type(in_col) is not str:
-		return False
 		
 	regular_expression = re.compile(r'''^							#match beginning of string
 										[#]{1} 						#exactly one hash
