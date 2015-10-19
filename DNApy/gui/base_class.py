@@ -29,7 +29,6 @@
 #Get source code at: https://github.com/mengqvist/DNApy
 #
 
-
 import wx
 import os
 import sys
@@ -157,7 +156,7 @@ class DNApyBaseDrawingClass(DNApyBaseClass):
 		angle = fraction*360
 		assert type(angle) is float, 'Error, the angle needs to be a float'''
 		assert 0<=angle<=360, 'Error, "%s" is not a valid angle. It needs to be 0 to 360.' % str(angle)
-		return angle	
+		return angle    
 
 
 	def PointsToAngle(self, centre_x, centre_y, x, y):
@@ -170,7 +169,7 @@ class DNApyBaseDrawingClass(DNApyBaseClass):
 		z = math.sqrt(math.pow((x-centre_x),2) + math.pow((y-centre_y),2)) #determine z (the hypotenuse)
 		sinangle = (y-centre_y)/z #calculate the Sin(angle)
 		radians = math.asin(sinangle) #negate the Sin part and get radians
-		degrees = radians*(180/math.pi)	#convert radians to degrees
+		degrees = radians*(180/math.pi) #convert radians to degrees
 		#now I have the angle of the triangle. Based on where it is placed I have to calculate the 'real' angle of a circle where 0 is at the top.
 
 		#for these calculations it is important to remember that y increases as you go down...
@@ -194,12 +193,12 @@ class DNApyBaseDrawingClass(DNApyBaseClass):
 		return degrees
 
 
-	def AngleToPoints(self, centre_x, centre_y, radius, angle):	
+	def AngleToPoints(self, centre_x, centre_y, radius, angle): 
 		'''
 		Takes the centre of a circle, an angle (in degrees) and a radius and calculates the correspoinding XY coordinate on the circle
 		'''
 		assert type(centre_x) is int and type(centre_y) is int, 'Error, the input coordinates need to be integers.'
- 		assert (type(angle) is int or type(angle) is float) and (type(radius) is int or type(radius) is float), 'Error, the input angle and radius need to be integers or floats.'
+		assert (type(angle) is int or type(angle) is float) and (type(radius) is int or type(radius) is float), 'Error, the input angle and radius need to be integers or floats.'
 		assert 0<=angle<=360, 'Error, the input angle is %s, but needs to be between 0 and 360.' % angle
 		x = int(centre_x + radius * math.cos((angle-90)*(math.pi/180)))
 		y = int(centre_y + radius * math.sin((angle-90)*(math.pi/180)))
@@ -226,9 +225,9 @@ class DNApyBaseDrawingClass(DNApyBaseClass):
 			#near side of box
 			i = finish_angle-start_angle
 			radius = radius-thickness
-			while i >= 0:	
+			while i >= 0:   
 				angle = finish_angle-i
-				x, y = self.AngleToPoints(xc, yc, radius, angle)						
+				x, y = self.AngleToPoints(xc, yc, radius, angle)                        
 				pointlist.append((x,y))
 				i -= step
 			pointlist.append(self.AngleToPoints(xc, yc, radius, finish_angle))
@@ -276,7 +275,7 @@ class DNApyBaseDrawingClass(DNApyBaseClass):
 					pass
 				else:
 					angle = finish_angle-i
-					x, y = self.AngleToPoints(xc, yc, radius, angle)						
+					x, y = self.AngleToPoints(xc, yc, radius, angle)                        
 					pointlist.append((x,y))
 				i += step
 
