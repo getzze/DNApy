@@ -28,31 +28,25 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
-
+from __future__ import absolute_import
 
 from wx.lib.pubsub import setupkwargs #this line not required in wxPython2.9.
  	                                  #See documentation for more detail
 from wx.lib.pubsub import pub
-
-from copy import deepcopy
-import string
-from os import access,listdir
-
-import sys, os
-import string
-
-import genbank
 import wx.stc
-
+import sys
+import os
+import string
 import pyperclip
 import copy
 
-import output
-import dna
-from base_class import DNApyBaseClass
-from base_class import DNApyBaseDrawingClass
 
-import featureedit_GUI
+import ..genbank
+import ..output
+import ..dna
+from .. import DNApyBaseClass, DNApyBaseDrawingClass
+
+import .featureedit_GUI
 
 # drawing
 import cairo
@@ -62,15 +56,13 @@ import pangocairo # for glyphs and text
 import math
 
 # for color function
-import colcol
+import ..colcol
 
 
-files	=	{}   #list with all configuration files
-files['default_dir'] 	= os.path.abspath(os.path.dirname(sys.argv[0]))+"/"
-files['default_dir']	= string.replace(files['default_dir'], "\\", "/")
-files['default_dir']	= string.replace(files['default_dir'], "library.zip", "")
-settings=files['default_dir']+"settings"   ##path to the file of the global settings
-execfile(settings) #gets all the pre-assigned settings
+files				 = {}   #list with all configuration files
+files['default_dir'] = os.path.dirname(os.path.realpath(__file__))
+settings_file        = os.path.join(files['default_dir'], "settings")   ##path to the file of the global settings
+execfile(settings_file) #gets all the pre-assigned settings
 
 
 ########### class for text ######################

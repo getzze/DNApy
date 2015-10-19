@@ -28,15 +28,17 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
+from __future__ import absolute_import
 
-from base_class import DNApyBaseClass
 import wx
 import re
 import string
-import genbank
 import math
 import collections
 
+
+import ..genbank
+from .. import DNApyBaseClass
 
 
 class EnzymeSelector(DNApyBaseClass):

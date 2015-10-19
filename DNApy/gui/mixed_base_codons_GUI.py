@@ -28,11 +28,13 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
+from __future__ import absolute_import
 
 import wx
 import wx.stc
-import mixed_base_codons as mbc
-import dna
+
+import ..mixed_base_codons as mbc
+import ..dna
 
 
 #TODO 

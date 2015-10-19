@@ -33,9 +33,9 @@
 #fix long plasmid names
 #add 'dna ruler'
 #add rightclick menus
+from __future__ import absolute_import
 
 import wx
-
 import cairo
 from wx.lib.wxcairo import ContextFromDC
 import pango # for text
@@ -44,30 +44,28 @@ import pangocairo # for glyphs and text
 from wx.lib.pubsub import setupkwargs 		#this line not required in wxPython2.9.
  	                                  	#See documentation for more detail
 from wx.lib.pubsub import pub
-
-
-import genbank
 import copy
 import math
 import random # testweise
-
-import os, sys
+import os
+import sys
 import string
-from base_class import DNApyBaseDrawingClass
-from base_class import DNApyBaseClass
-import featureedit_GUI
 
-import colcol
 
-import options					# new option file to make options easy to change in one file (or settings.txt)
+from .. import DNApyBaseDrawingClass, DNApyBaseClass
+import .featureedit_GUI
 
-files					={}   #list with all configuration files
-files['default_dir'] 	= os.path.abspath(os.path.dirname(sys.argv[0]))+"/"
-files['default_dir']	= string.replace(files['default_dir'], "\\", "/")
-files['default_dir']	= string.replace(files['default_dir'], "library.zip", "")
-settings				= files['default_dir'] + "settings"   ##path to the file of the global settings
-execfile(settings) #gets all the pre-assigned settings
+import ..genbank
+import ..colcol
+import ..options					# new option file to make options easy to change in one file (or settings.txt)
 
+files				 = {}   #list with all configuration files
+files['default_dir'] = os.path.dirname(os.path.realpath(__file__))
+settings_file        = os.path.join(files['default_dir'], "settings")   ##path to the file of the global settings
+execfile(settings_file) #gets all the pre-assigned settings
+
+
+ICON_FOLDER = "icon"
 
 
 
@@ -1397,28 +1395,28 @@ class PlasmidView2(DNApyBaseDrawingClass):
 		#buttons
 		padding = 10 #how much to add around the picture
 
-		imageFile 	= files['default_dir']+"/icon/circle.png"
+		imageFile 	= os.path.join(files['default_dir'], ICON_FOLDER, "circle.png")
 		image1 		= wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		circle 		= wx.BitmapButton(panel1, id=10, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile 	= files['default_dir']+"/icon/group.png"
+		imageFile 	= os.path.join(files['default_dir'], ICON_FOLDER, "group.png")
 		image1 		= wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		group 		= wx.BitmapButton(panel1, id=11, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = files['default_dir']+"/icon/radiating.png"
+		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "radiating.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		radiating = wx.BitmapButton(panel1, id=12, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
 
-		imageFile = files['default_dir']+"/icon/new_small.png"
+		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "new_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		newfeature = wx.BitmapButton(panel1, id=1, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = files['default_dir']+"/icon/remove_small.png"
+		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "remove_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		deletefeature = wx.BitmapButton(panel1, id=2, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = files['default_dir']+"/icon/edit.png"
+		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "edit.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		edit = wx.BitmapButton(panel1, id=6, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "edit")
 
@@ -1511,22 +1509,13 @@ class MyApp(wx.App):
 
 if __name__ == '__main__': #if script is run by itself and not loaded
 
-	files={}   #list with all configuration files
-	files['default_dir'] = os.path.abspath(os.path.dirname(sys.argv[0]))+"/"
-	files['default_dir']=string.replace(files['default_dir'], "\\", "/")
-	files['default_dir']=string.replace(files['default_dir'], "library.zip", "")
-	settings=files['default_dir']+"settings"   ##path to the file of the global settings
-	execfile(settings) #gets all the pre-assigned settings
-
 	genbank.dna_selection = (1, -1)	 #variable for storing current DNA selection
 	genbank.feature_selection = False #variable for storing current feature selection
 
-	import sys
 	assert len(sys.argv) == 2, 'Error, this script requires a path to a genbank file as an argument.'
 	# print('Opening %s' % str(sys.argv[1]))
 
 	genbank.gb = genbank.gbobject(str(sys.argv[1])) #make a genbank object and read file
-
 
 	app = MyApp(0)
 	app.MainLoop()

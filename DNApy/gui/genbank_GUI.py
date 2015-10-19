@@ -28,10 +28,11 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
+from __future__ import absolute_import
 
-from output import create
-import genbank
-from base_class import DNApyBaseClass
+from ..output import create
+import ..genbank
+from .. import DNApyBaseClass
 
 
 class MyPanel(create):

@@ -32,7 +32,7 @@
 
 #TODO
 #nothing at the moment
-
+from __future__ import absolute_import
 
 import ast
 from wx.lib.agw import ultimatelistctrl as ULC
@@ -40,24 +40,25 @@ import wx
 from wx.lib.pubsub import setupkwargs #this line not required in wxPython2.9.
  	                                  #See documentation for more detail
 from wx.lib.pubsub import pub
-
-import sys, os
+import sys
+import os
 import string
 
 
 import copy
 
-import colcol
-import genbank
-from base_class import DNApyBaseClass
-import featureedit_GUI
+import ..colcol
+import ..genbank
+from .. import DNApyBaseClass
+import .featureedit_GUI
 
-files={}   #list with all configuration files
-files['default_dir'] = os.path.abspath(os.path.dirname(sys.argv[0]))+"/"
-files['default_dir']=string.replace(files['default_dir'], "\\", "/")
-files['default_dir']=string.replace(files['default_dir'], "library.zip", "")
-settings=files['default_dir']+"settings"   ##path to the file of the global settings
-execfile(settings) #gets all the pre-assigned settings
+files				 = {}   #list with all configuration files
+files['default_dir'] = os.path.dirname(os.path.realpath(__file__))
+settings_file        = os.path.join(files['default_dir'], "settings")   ##path to the file of the global settings
+execfile(settings_file) #gets all the pre-assigned settings
+
+
+ICON_FOLDER = "icon"
 
 
 
@@ -82,23 +83,23 @@ class FeatureList(DNApyBaseClass):
 		
 		#buttons
 		padding = 10 #how much to add around the picture
-		imageFile = files['default_dir']+"/icon/new_small.png"
+		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "new_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		newfeature = wx.BitmapButton(self, id=1, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = files['default_dir']+"/icon/remove_small.png"
+		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "remove_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		deletefeature = wx.BitmapButton(self, id=2, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = files['default_dir']+"/icon/move_up.png"
+		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "move_up.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		moveup = wx.BitmapButton(self, id=4, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = files['default_dir']+"/icon/move_down.png"
+		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "move_down.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		movedown = wx.BitmapButton(self, id=5, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = files['default_dir']+"/icon/edit.png"
+		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "edit.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		edit = wx.BitmapButton(self, id=6, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "edit")
 		
@@ -339,17 +340,9 @@ class MyApp(wx.App):
 
 if __name__ == '__main__': #if script is run by itself and not loaded	
 
-	files={}   #list with all configuration files
-	files['default_dir'] = os.path.abspath(os.path.dirname(sys.argv[0]))+"/"
-	files['default_dir']=string.replace(files['default_dir'], "\\", "/")
-	files['default_dir']=string.replace(files['default_dir'], "library.zip", "")
-	settings=files['default_dir']+"settings"   ##path to the file of the global settings
-	execfile(settings) #gets all the pre-assigned settings
-
 	genbank.dna_selection = (1, -1)	 #variable for storing current DNA selection
 	genbank.feature_selection = False #variable for storing current feature selection
 
-	import sys
 	assert len(sys.argv) == 2, 'Error, this script requires a path to a genbank file as an argument.'
 	print('Opening %s' % str(sys.argv[1]))
 
