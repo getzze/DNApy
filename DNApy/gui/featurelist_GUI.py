@@ -32,7 +32,7 @@
 
 #TODO
 #nothing at the moment
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import ast
 from wx.lib.agw import ultimatelistctrl as ULC

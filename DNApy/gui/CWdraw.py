@@ -29,7 +29,7 @@
 #
 #Get source code at: https://github.com/0b0bby0/DNApy
 #
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 from . import wsvg
 

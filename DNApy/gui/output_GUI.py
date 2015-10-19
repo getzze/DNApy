@@ -28,9 +28,11 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
+from __future__ import unicode_literals
 
 import wx.richtext as rt
 import wx
+
 from . import DNApyBaseClass
 #from wx.lib.pubsub import pub
 

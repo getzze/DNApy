@@ -32,7 +32,7 @@
 
 #TODO
 #change how qualifiers are edited
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import ast
 import wx

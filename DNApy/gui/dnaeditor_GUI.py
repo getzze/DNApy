@@ -28,7 +28,7 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 from wx.lib.pubsub import setupkwargs #this line not required in wxPython2.9.
  	                                  #See documentation for more detail

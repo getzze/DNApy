@@ -12,7 +12,7 @@ does a remarkable job of converting SVG files into other formats.
 Isendrak Skatasmid (http://code.activestate.com/recipes/578123-draw-svg-images-in-python-python-recipe-enhanced-v/) created an enhanced Version of Rick Muller's Code from http://code.activestate.com/recipes/325823-draw-svg-images-in-python/
 This was in turn enhanced by Martin Engqvist to contain code for styling text, rotating text, drawing arcs and drawing double arcs.
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import os
 import math

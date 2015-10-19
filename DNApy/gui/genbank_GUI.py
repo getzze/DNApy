@@ -28,7 +28,7 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 from .. import genbank
 from . import DNApyBaseClass, output_GUI
