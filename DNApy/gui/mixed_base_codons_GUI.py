@@ -28,7 +28,7 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import wx
 import wx.stc
@@ -193,13 +193,17 @@ class MixedBaseCodon(wx.Panel):
 		globsizer.Add(sizer3)
 		globsizer.Add(sizer4)
 		globsizer.Add(sizer5)
-		globsizer.Add(spacer0)
+		globsizer.AddSpacer((0,11))
+		#globsizer.Add(spacer0)
 		globsizer.Add(sizer6, flag=wx.LEFT, border=10)
-		globsizer.Add(spacer1)
+		globsizer.AddSpacer((0,11))
+		#globsizer.Add(spacer1)
 		globsizer.Add(self.target_hits, flag=wx.LEFT, border=10)
-		globsizer.Add(spacer2)
+		globsizer.AddSpacer((0,11))
+		#globsizer.Add(spacer2)
 		globsizer.Add(self.offtarget_hits, flag=wx.LEFT, border=10)
-		globsizer.Add(spacer1)
+		globsizer.AddSpacer((0,11))
+		#globsizer.Add(spacer1)
 		self.SetSizer(globsizer)
 		self.Center()
 
