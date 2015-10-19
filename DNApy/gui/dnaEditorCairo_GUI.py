@@ -28,7 +28,7 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, unicode_literals, print_function
 
 from wx.lib.pubsub import setupkwargs #this line not required in wxPython2.9.
                                       #See documentation for more detail
@@ -163,13 +163,13 @@ class TextEdit(DNApyBaseDrawingClass):
 
         # start dc
         dc = wx.MemoryDC(self._Buffer)
-        if not dc.IsOk():
-            raise ValueError("There was a problem with the drawing buffer.")
-        dc.SetBackground(wx.Brush("White"))
+        
+        dc.SetBackground(wx.Brush((255,255,255)))  # white
         dc.Clear()
-        print(str(dc))
+
         # make a cairo context
         self.ctx = ContextFromDC(dc)
+            
         # start pango as a font backend
         self.pango = pangocairo.CairoContext(self.ctx)
         self.pango.set_antialias(cairo.ANTIALIAS_SUBPIXEL)
@@ -771,6 +771,8 @@ class TextEdit(DNApyBaseDrawingClass):
 
         event.Skip() #very important to make the event propagate and fulfill its original function
 
+    def OnSize(self, event):
+        pass
 
 #   def OnRightUp(self, event):
 #       event.Skip() #very important to make the event propagate and fulfill its original function
