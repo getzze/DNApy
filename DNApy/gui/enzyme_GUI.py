@@ -37,6 +37,7 @@ import math
 import collections
 
 
+from .. import RESOURCES_DIR
 from .. import genbank
 from .. import DNApyBaseClass
 
@@ -199,7 +200,7 @@ class EnzymeSelector(DNApyBaseClass):
 			enzymes2show = self.findCutters(2)
 		elif n == "commercial":
 			# show commercial
-			with open ("resources/commercialEnzymes.lst", "r") as myfile:
+			with open(os.path.join(RESOURCES_DIR, 'commercialEnzymes.lst'), 'r') as myfile:
 				data=myfile.read().splitlines()
 				# check if we know this enzyme
 				for e in data:
@@ -857,7 +858,7 @@ class EnzymeDigestion(DNApyBaseClass):
 		Ladders  = []
 
 		# open the dna ladder file
-		with open ("resources/dnaLadders.lst", "r") as myfile:
+		with open(os.path.join(RESOURCES_DIR, 'dnaLadders.lst'), 'r') as myfile:
 				data=myfile.read().splitlines()
 		
 		# generate a list of ladders by splitting the line
@@ -904,7 +905,7 @@ class EnzymeDigestion(DNApyBaseClass):
 				else:
 					strLadder = "%s,%s" % (strLadder, i)
 			# save to file
-			with open("resources/dnaLadders.lst", "a") as myfile:
+			with open(os.path.join(RESOURCES_DIR, 'dnaLadders.lst'), 'a') as myfile:
 				myfile.write(strLadder)
 			
 			# reload ladders for selection

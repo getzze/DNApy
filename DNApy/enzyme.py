@@ -37,17 +37,17 @@
 # restrictionEnzyme()		store info about an restriction enzyme type II
 # initRestriction()			class to store and update all avialible restriction enzymes
 #
+from __future__ import absolute_import
 
-
-
-
-from base_class import DNApyBaseClass
 import wx
 import re
 import string
-import genbank
 import math
 import collections
+
+from . import RESOURCES_DIR
+from . import DNApyBaseClass
+from . import genbank
 
 # class to make restriktion enzymes more usefull
 # name = name of enzyme
@@ -156,7 +156,7 @@ class initRestriction():
 
 
 		# for this we have enzymes in folder /resources
-		with open('resources/emboss_e.txt') as f:
+		with open(os.path.join(RESOURCES_DIR, 'emboss_e.txt'), 'r') as f:
 			for line in f:	
 				# each line is one enzyme, except the header
 				if ( line[:1] != "#" ):	

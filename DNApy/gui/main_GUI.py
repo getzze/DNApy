@@ -44,12 +44,13 @@ import subprocess
 
 #DNApy modules
 from . import SETTINGS_DIR, ICONS_DIR
+
+from .. import __version__, __title__, __desc__, __url__, __license__
 from .. import pyperclip
 from .. import dna
 from .. import genbank
 from .. import output
 from .. import enzyme
-
 from .. import DNApyBaseClass
 
 #GUI components
@@ -234,7 +235,7 @@ class DNApy(wx.Frame):
             genbank.gb = genbank.gbobject() #make new gb in panel
 
 
-            self.SetTitle('NewFile - DNApy')
+            self.SetTitle('NewFile - {}'.format(__title__))
 #           self.page_change("")
 
             self.frame_1_toolbar.EnableTool(502, 1)
@@ -275,7 +276,7 @@ class DNApy(wx.Frame):
         if extension.lower() == 'gb':
             genbank.gb = genbank.gbobject(all_path) #make a genbank object and read file
 
-            self.SetTitle(genbank.gb.fileName+' - DNApy')
+            self.SetTitle(' - '.join([genbank.gb.fileName , __title__]))
             if genbank.gb.clutter == True: #if tags from ApE or Vector NTI is found in file
                 dlg = wx.MessageDialog(self, style=wx.YES_NO|wx.CANCEL, message='This file contains tags from the Vector NTI or ApE programs. Keeping these tags may break compatibility with other software. Removing them will clean up the file, but may result in the loss of some personalized styling options when this file is viewed in Vector NTI or ApE. Do you wish to REMOVE these tags?')
                 result = dlg.ShowModal()
@@ -339,7 +340,7 @@ class DNApy(wx.Frame):
             #try:
             genbank.gb.SetFilepath(all_path)
             self.save_file("")
-            self.SetTitle(genbank.gb.fileName+' - DNApy')
+            self.SetTitle(' - '.join([genbank.gb.fileName , __title__]))
             #except:
             #   error_window(7, self)
 
@@ -1248,12 +1249,26 @@ Put Table here
 
 ##### main loop
 class MyApp(wx.App):
-    def OnInit(self):
-        frame = DNApy(None, -1, "DNApy")
-        frame.Show(True)
-        self.SetTopWindow(frame)
-        return True
+    def __init__(self, redirect=False, filename=None):
+        wx.App.__init__(self, redirect, filename)
 
+        self.frame = DNApy(None, -1, __title__)
+        self.frame.Show(True)
+        self.SetTopWindow(self.frame)
+
+    def OnButton(self, evt):
+        # First we create and fill the info object
+        info = wx.AboutDialogInfo()
+        info.Name = __title__
+        info.Version = __version__
+        info.Description = __desc__
+        info.WebSite = (__url__, "{} home page".format(__title__))
+        info.License = __license__
+
+        # Then we call wx.AboutBox giving it that info object
+        wx.AboutBox(info)
+        
+        
 def startgui():
     app = MyApp(0)
     sys.exit(app.MainLoop())

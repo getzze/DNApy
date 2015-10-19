@@ -40,9 +40,8 @@ import os
 import copy
 
 
-from .. import pyperclip
 from .. import genbank
-from .. import output
+#from .. import output
 from .. import dna
 from .. import DNApyBaseClass
 

@@ -39,15 +39,16 @@
 #add a function that checks that everything is ok. I.e. that it conforms to the genbank format.
 #make changes to how qualifiers are parsed. For example /qualifier=xyz, the '=' is not always there...
 
-import dna
 import copy
-import pyperclip
-import oligo_localizer
-import peptide_localizer
 import re
 import sys
 import wx	# for richCopy
 import json	# for richCopy
+
+from . import dna
+from . import pyperclip
+from . import oligo_localizer
+from . import peptide_localizer
 
 
 #the feature class is not currently used. 

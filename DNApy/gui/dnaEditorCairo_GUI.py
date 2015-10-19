@@ -38,16 +38,6 @@ import sys
 import os
 import string
 import copy
-
-
-from .. import pyperclip
-from .. import genbank
-from .. import output
-from .. import dna
-from .. import DNApyBaseClass, DNApyBaseDrawingClass
-
-from . import featureedit_GUI
-
 # drawing
 import cairo
 from wx.lib.wxcairo import ContextFromDC
@@ -55,8 +45,14 @@ import pango # for text
 import pangocairo # for glyphs and text
 import math
 
-# for color function
-from .. import colcol
+
+from .. import genbank
+#from .. import output
+from .. import dna
+from .. import DNApyBaseClass, DNApyBaseDrawingClass
+from .. import colcol  # for color function
+
+from . import featureedit_GUI
 
 
 from . import SETTINGS_DIR, ICONS_DIR
