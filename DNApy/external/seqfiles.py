@@ -112,7 +112,7 @@
 
 import os
 import fnmatch
-import dna as DNA
+from . import dna as DNA
 
 #from Bio.Align.Applications import MuscleCommandline
 from StringIO import StringIO

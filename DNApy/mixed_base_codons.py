@@ -28,10 +28,12 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
+from __future__ import absolute_import
 
-from copy import deepcopy
-import dna
+import copy
 import re
+
+from . import dna
 	
 	
 #TODO 
@@ -235,7 +237,7 @@ class AmbigousCodon:
 					for p in pos:
 						output.append([p])
 				else:
-					output.extend(deepcopy(output * (len(pos)-1)))
+					output.extend(copy.deepcopy(output * (len(pos)-1)))
 					for i in range(len(pos)):
 						for j in range(output_len):
 							output[j+i*output_len].append(pos[i])

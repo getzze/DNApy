@@ -10,8 +10,6 @@ __url__ = 'https://github.com/mengqvist/DNApy'
 import logging
 import os
 
-from .base_class import DNApyBaseClass, DNApyBaseDrawingClass
-
 try:
     # Try systemwide installation and fallback to included
     import pyperclip
@@ -23,9 +21,9 @@ ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 DEFAULT_SETTINGS_DIR = os.path.join(ROOT_DIR, "defaults")
 SETTINGS_DIR = DEFAULT_SETTINGS_DIR
 
-RESOURCES_DIR = os.path.join(os.path.dirname(ROOT_DIR, "resources")
+RESOURCES_DIR = os.path.join(ROOT_DIR, "resources")
 
-GUI_DIR = os.path.join(os.path.dirname(ROOT_DIR, "gui")
+GUI_DIR = os.path.join(ROOT_DIR, "gui")
 ICONS_DIR = os.path.join(GUI_DIR, "icon")
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())

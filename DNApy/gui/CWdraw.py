@@ -29,9 +29,9 @@
 #
 #Get source code at: https://github.com/0b0bby0/DNApy
 #
+from __future__ import absolute_import
 
-
-import wsvg
+from . import wsvg
 
 def Draw(table=1):
 	'''Draw an SVG codon wheel'''

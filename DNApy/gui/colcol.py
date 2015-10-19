@@ -31,10 +31,9 @@
 
 
 #This file mainly deals with color conversions, color transformations, and generating color scales.
-
 import re
-import wsvg
 import colorsys
+
 
 def is_rgb(in_col):
 	'''
@@ -482,86 +481,7 @@ def NextRGB(color = (0,0,0)):
 	return (R, G, B)
 	
 	
-	
-def test_scale():
-	'''
-	For testing the color scale, make an svg file.
-	'''
-	
-	name = 'testing'
-	scene = wsvg.Scene(name=name, size=(400, 400))
-
-	def paintit(x, y, col1, col2, white_mid):
-		col_dict = scale(col1, col2, white_mid)
-		for n in range(0, 101):
-			y += 0.5
-			scene.add(wsvg.Rectangle(origin=(x, y), height=0.5, width=10, fill_color=col_dict[n], line_color=col_dict[n], line_width=0.5))	
-
-	#purple to tiel
-	col1 = '#800080'
-	col2 = '#008080'
-	x = 10
-	y = 10
-	paintit(x, y, col1, col2, white_mid=True)
-	
-	#orange to blue
-	col1 = '#ffc500'
-	col2 = '#056efa'
-	x = 30
-	y = 10
-	paintit(x, y, col1, col2, white_mid=True)
-	
-	#blue to red
-	col1 = '#817cbb'
-	col2 = '#c12133'
-	x = 50
-	y = 10
-	paintit(x, y, col1, col2, white_mid=True)
-	scene.write_svg()
-	
-	#another blue to red
-	col1 = '#30acdf'
-	col2 = '#ef292b'
-	x = 70
-	y = 10
-	paintit(x, y, col1, col2, white_mid=True)
-	scene.write_svg()	
-
-	#orange to green
-	col1 = '#ff6600'
-	col2 = '#2c9082'
-	x = 90
-	y = 10
-	paintit(x, y, col1, col2, white_mid=True)
-	scene.write_svg()		
-	
-	#orange to dark blue
-	col1 = '#ff6600'
-	col2 = '#18567d'
-	x = 110
-	y = 10
-	paintit(x, y, col1, col2, white_mid=True)
-	scene.write_svg()	
-	
-	#grey to orange
-	col1 = '#666666'
-	col2 = '#ff6600'
-	x = 130
-	y = 10
-	paintit(x, y, col1, col2, white_mid=True)
-	scene.write_svg()	
-
-	#dark yellow to blue
-	col1 = '#cba916'
-	col2 = '#8eb6d5'
-	x = 130
-	y = 10
-	paintit(x, y, col1, col2, white_mid=True)
-	scene.write_svg()	
-
-	
 if __name__ == "__main__": 
-#	test_scale()
 	print(triadic('#ffa2b5'))
 	print(triadic((255, 162, 181)))
 	 	

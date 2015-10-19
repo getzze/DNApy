@@ -35,11 +35,10 @@
 # You will need to have MUSCLE installed on your Linux system for this to work.
 # For local sequence aligments use Water (TODO)
 
+from __future__ import absolute_import 
 
-
-from StringIO import StringIO
-from muscle_wrapper import MuscleCommandline
-import fasta
+from .muscle_wrapper import MuscleCommandline
+from . import fasta
 
 
 def align_fasta(fasta_string):

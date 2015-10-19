@@ -31,7 +31,7 @@
 
 import wx.richtext as rt
 import wx
-from base_class import DNApyBaseClass
+from . import DNApyBaseClass
 #from wx.lib.pubsub import pub
 
 class create(DNApyBaseClass):

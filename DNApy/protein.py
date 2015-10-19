@@ -28,9 +28,11 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
+from __future__ import absolute_import 
 
-import dna
 import random
+
+from . import dna
 
 def one_to_three(one_letter):
 	'''

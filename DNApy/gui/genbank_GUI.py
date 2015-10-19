@@ -30,12 +30,11 @@
 #
 from __future__ import absolute_import
 
-from ..output import create
 from .. import genbank
-from .. import DNApyBaseClass
+from . import DNApyBaseClass, output_GUI
 
 
-class MyPanel(create):
+class MyPanel(output_GUI.create):
 	'''Class to add update behaviour to the output panel'''
 	def __init__(self, parent, style):
 		super(MyPanel, self).__init__(parent, style) 

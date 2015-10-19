@@ -41,12 +41,9 @@ import copy
 
 
 from .. import genbank
-#from .. import output
 from .. import dna
-from .. import DNApyBaseClass
 
-from . import featurelist_GUI
-from . import plasmid_GUI
+from . import DNApyBaseClass, output_GUI, featurelist_GUI, plasmid_GUI
 
 #TODO
 #fix statusbar in general
@@ -273,7 +270,7 @@ class TextEdit(DNApyBaseClass):
 
 		
 #		#create line count panel
-##		self.linecount = output.create(self, style=wx.VSCROLL|wx.HSCROLL|wx.BORDER_NONE); #create DNA window
+##		self.linecount = output_GUI.create(self, style=wx.VSCROLL|wx.HSCROLL|wx.BORDER_NONE); #create DNA window
 ##		self.linecount.SetEditable(False)
 
 		#create dna view panel
@@ -491,7 +488,7 @@ class TextEdit(DNApyBaseClass):
 	def make_outputpopup(self):
 		'''Creates a popup window in which output can be printed'''
 		self.outputframe = wx.Frame(None, title="Output Panel") # creation of a Frame with a title
-		self.output = output.create(self.outputframe, style=wx.VSCROLL|wx.HSCROLL) # creation of a richtextctrl in the frame
+		self.output = output_GUI.create(self.outputframe, style=wx.VSCROLL|wx.HSCROLL) # creation of a richtextctrl in the frame
 		
 
 

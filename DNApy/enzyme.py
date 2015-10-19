@@ -39,14 +39,13 @@
 #
 from __future__ import absolute_import
 
-import wx
 import re
+import os
 import string
 import math
 import collections
 
 from . import RESOURCES_DIR
-from . import DNApyBaseClass
 from . import genbank
 
 # class to make restriktion enzymes more usefull

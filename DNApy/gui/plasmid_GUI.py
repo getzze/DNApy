@@ -52,13 +52,11 @@ import sys
 import string
 
 
-from .. import DNApyBaseDrawingClass, DNApyBaseClass
 from .. import genbank
-from .. import colcol
-from .. import options					# new option file to make options easy to change in one file (or settings.txt)
+
+from . import DNApyBaseDrawingClass, DNApyBaseClass, colcol, featureedit_GUI
 
 from . import SETTINGS_DIR, ICONS_DIR
-from . import featureedit_GUI
 
 files				 = {}   #list with all configuration files
 files['default_dir'] = SETTINGS_DIR

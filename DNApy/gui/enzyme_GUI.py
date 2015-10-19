@@ -39,7 +39,7 @@ import collections
 
 from .. import RESOURCES_DIR
 from .. import genbank
-from .. import DNApyBaseClass
+from . import DNApyBaseClass
 
 
 class EnzymeSelector(DNApyBaseClass):

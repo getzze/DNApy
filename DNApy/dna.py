@@ -28,12 +28,12 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
+from __future__ import absolute_import 
 
-import fasta
 import string
 import random
-import protein # for conversion from dna to amino acid name
 
+from . import fasta
 
 ############# Basic DNA functions #####################
 

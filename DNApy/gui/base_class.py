@@ -31,9 +31,11 @@
 
 
 import wx
-import os, sys
+import os
+import sys
 import math
-import colcol
+
+from . import colcol
 
 
 

@@ -43,15 +43,12 @@ from wx.lib.pubsub import pub
 import sys
 import os
 import string
-
-
 import copy
 
-from .. import colcol
 from .. import genbank
-from .. import DNApyBaseClass
 
-from . import featureedit_GUI
+from . import DNApyBaseClass, featureedit_GUI, colcol
+
 from . import SETTINGS_DIR, ICONS_DIR
 
 files				 = {}   #list with all configuration files

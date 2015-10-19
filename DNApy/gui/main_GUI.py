@@ -40,7 +40,7 @@ from wx.lib.pubsub import setupkwargs #this line not required in wxPython2.9.
                                       #See documentation for more detail
 from wx.lib.pubsub import pub
 import subprocess
-
+import pdb
 
 #DNApy modules
 from . import SETTINGS_DIR, ICONS_DIR
@@ -49,13 +49,11 @@ from .. import __version__, __title__, __desc__, __url__, __license__
 from .. import pyperclip
 from .. import dna
 from .. import genbank
-from .. import output
 from .. import enzyme
-from .. import DNApyBaseClass
 
 #GUI components
+from . import dnaEditorCairo_GUI, featureedit_GUI, featurelist_GUI, plasmid_GUI, genbank_GUI, enzyme_GUI, output_GUI, DNApyBaseClass
 #import dnaeditor_GUI
-from . import dnaEditorCairo_GUI, featureedit_GUI, featurelist_GUI, plasmid_GUI, genbank_GUI, enzyme_GUI
 #import mixed_base_codons_GUI
 
 
@@ -87,26 +85,25 @@ class DNAedit(DNApyBaseClass):
         splitter1 = wx.SplitterWindow(splitter0, id=0, style=wx.SP_3D)
 
         self.scroll  = wx.ScrolledWindow(splitter0, wx.ID_ANY, style= wx.FULL_REPAINT_ON_RESIZE )
-
-
+        #self.scroll  = wx.ScrolledWindow(splitter0, wx.ID_ANY )
+        self.scroll.SetScrollbars(0, 10, 1, 10)
+        self.scroll.SetScrollRate( 1, 15 )      # Pixels per scroll increment
 
         self.dnaview = dnaEditorCairo_GUI.TextEdit(self.scroll, id=wx.ID_ANY) # This generates 8 OnSize draw events
 
-        self.scroll.SetScrollbars(0,10, 1, 10)
-        self.scroll.SetScrollRate( 1, 15 )      # Pixels per scroll increment
-
         scrollSizer = wx.BoxSizer()
-        scrollSizer.Add(self.dnaview,wx.ID_ANY, wx.EXPAND|wx.ALL, 0)
+        scrollSizer.Add(self.dnaview, flag=wx.EXPAND|wx.ALL, border=0)
         self.scroll.SetSizer(scrollSizer)
 
         self.parent = parent
         self.plasmidview = plasmid_GUI.PlasmidView2(splitter0, -1)
 
-
-        splitter0.SplitVertically( self.scroll, self.plasmidview, sashPosition=(windowsize[0]/1.75))
+        pdb.set_trace()
+        #splitter0.SplitVertically( self.scroll, self.plasmidview, sashPosition=(windowsize[0]/1.75))
+        splitter0.SplitVertically( self.scroll, self.plasmidview, sashPosition=0)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(item=splitter0, proportion=-1, flag=wx.EXPAND)
+        sizer.Add(splitter0, proportion=-1, flag=wx.EXPAND)
         self.SetSizer(sizer)
 
         # Setup the publisher listeners for use with UI updates
@@ -192,9 +189,11 @@ class DNApy(wx.Frame):
         # save the selected restriktion enzymes
         genbank.restriction_sites       = {}
 
+        pdb.set_trace()
         #build the UI using the pre-defined class
         self.DNApy = DNAedit(self, -1)
 
+        pdb.set_trace()
         #bind events
         #wx.EVT_NOTEBOOK_PAGE_CHANGED(self, ID, self.page_change)
 
@@ -556,7 +555,7 @@ class DNApy(wx.Frame):
     def make_outputpopup(self):
         '''Creates a popup window in which output can be printed'''
         self.outputframe = wx.Frame(None, title="Output Panel") # creation of a Frame with a title
-        self.output = output.create(self.outputframe, style=wx.VSCROLL|wx.HSCROLL) # creation of a richtextctrl in the frame
+        self.output = output_GUI.create(self.outputframe, style=wx.VSCROLL|wx.HSCROLL) # creation of a richtextctrl in the frame
 
 
 ############## Info methods
@@ -803,7 +802,7 @@ Put Table here
     def view_output(self, evt):
         '''Make an output window in which things can be printed'''
         self.outputframe = wx.Frame(self, title="Output Panel") # creation of a Frame with a title
-        self.outputwindow = output.create(self.outputframe, style=wx.VSCROLL|wx.HSCROLL) # creation of a richtextctrl in the frame
+        self.outputwindow = output_GUI.create(self.outputframe, style=wx.VSCROLL|wx.HSCROLL) # creation of a richtextctrl in the frame
         sizer = wx.BoxSizer(wx.VERTICAL) #make sizer
         sizer.Add(item=self.outputwindow, proportion=-1, flag=wx.EXPAND)    #put panel in sizer
         self.outputframe.SetSizer(sizer) #assign sizer to window
@@ -1252,6 +1251,7 @@ class MyApp(wx.App):
     def __init__(self, redirect=False, filename=None):
         wx.App.__init__(self, redirect, filename)
 
+    #def OnInit(self):
         self.frame = DNApy(None, -1, __title__)
         self.frame.Show(True)
         self.SetTopWindow(self.frame)
