@@ -28,6 +28,7 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
+from __future__ import absolute_import, print_function, unicode_literals
 
 import wx
 import os
