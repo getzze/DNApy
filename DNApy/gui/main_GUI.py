@@ -28,7 +28,7 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import string
 import inspect
@@ -40,7 +40,6 @@ from wx.lib.pubsub import setupkwargs #this line not required in wxPython2.9.
                                       #See documentation for more detail
 from wx.lib.pubsub import pub
 import subprocess
-import pdb
 
 #DNApy modules
 from . import SETTINGS_DIR, ICONS_DIR
@@ -52,9 +51,8 @@ from .. import genbank
 from .. import enzyme
 
 #GUI components
-from . import dnaEditorCairo_GUI, featureedit_GUI, featurelist_GUI, plasmid_GUI, genbank_GUI, enzyme_GUI, output_GUI, DNApyBaseClass
+from . import dnaEditorCairo_GUI, featureedit_GUI, featurelist_GUI, plasmid_GUI, genbank_GUI, enzyme_GUI, output_GUI, mixed_base_codons_GUI, DNApyBaseClass
 #import dnaeditor_GUI
-#import mixed_base_codons_GUI
 
 
 #if sys.platform == 'win32':
@@ -85,7 +83,6 @@ class DNAedit(DNApyBaseClass):
         splitter1 = wx.SplitterWindow(splitter0, id=0, style=wx.SP_3D)
 
         self.scroll  = wx.ScrolledWindow(splitter0, wx.ID_ANY, style= wx.FULL_REPAINT_ON_RESIZE )
-        #self.scroll  = wx.ScrolledWindow(splitter0, wx.ID_ANY )
         self.scroll.SetScrollbars(0, 10, 1, 10)
         self.scroll.SetScrollRate( 1, 15 )      # Pixels per scroll increment
 
@@ -98,9 +95,7 @@ class DNAedit(DNApyBaseClass):
         self.parent = parent
         self.plasmidview = plasmid_GUI.PlasmidView2(splitter0, -1)
 
-        pdb.set_trace()
-        #splitter0.SplitVertically( self.scroll, self.plasmidview, sashPosition=(windowsize[0]/1.75))
-        splitter0.SplitVertically( self.scroll, self.plasmidview, sashPosition=0)
+        splitter0.SplitVertically( self.scroll, self.plasmidview, sashPosition=(windowsize[0]/1.75))
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(splitter0, proportion=-1, flag=wx.EXPAND)
@@ -189,11 +184,9 @@ class DNApy(wx.Frame):
         # save the selected restriktion enzymes
         genbank.restriction_sites       = {}
 
-        pdb.set_trace()
         #build the UI using the pre-defined class
         self.DNApy = DNAedit(self, -1)
 
-        pdb.set_trace()
         #bind events
         #wx.EVT_NOTEBOOK_PAGE_CHANGED(self, ID, self.page_change)
 
