@@ -107,6 +107,7 @@ class DNApyBaseDrawingClass(DNApyBaseClass):
 		# the same size as the Window
 		#Size  = self.GetClientSizeTuple()
 		Size  = self.ClientSize
+		Size = (max(Size[0], 1), max(Size[1], 1))
 		self.size = Size
 
 		# Make new offscreen bitmap: this bitmap will always have the
