@@ -28,7 +28,7 @@
 #
 #Get source code at: https://github.com/mengqvist/DNApy
 #
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import wx
 import re
@@ -145,7 +145,8 @@ class EnzymeSelector(DNApyBaseClass):
 					
 		# grid settings
 		hbox      = wx.BoxSizer(wx.HORIZONTAL)
-		gridsizer = wx.FlexGridSizer(rows=2, cols=4, vgap=3, hgap=10)
+		#gridsizer = wx.FlexGridSizer(rows=2, cols=4, vgap=3, hgap=10)
+		gridsizer = wx.FlexGridSizer(cols=4, vgap=3, hgap=10)
 		gridsizer.AddGrowableCol(0)					# make cols growable
 		gridsizer.AddGrowableCol(1)					# make cols growable
 		gridsizer.AddGrowableCol(2)					# make cols growable
@@ -559,7 +560,8 @@ class EnzymeDigestion(DNApyBaseClass):
 		
 		# grid settings
 		hbox       = wx.BoxSizer(wx.HORIZONTAL)
-		gridsizer  = wx.FlexGridSizer(rows=2, cols=2, vgap=3, hgap=10)
+		#gridsizer  = wx.FlexGridSizer(rows=2, cols=2, vgap=3, hgap=10)
+		gridsizer  = wx.FlexGridSizer(cols=2, vgap=3, hgap=10)
 		gridsizer.AddGrowableCol(0)					# make cols growable
 		# add the elements to the grid for flexible display
 		gridsizer.Add(controlbox)      				# row 1, col 1
