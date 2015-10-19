@@ -37,16 +37,16 @@ import wx.stc
 import sys
 import os
 import string
-import pyperclip
 import copy
 
 
-import ..genbank
-import ..output
-import ..dna
+from .. import pyperclip
+from .. import genbank
+from .. import output
+from .. import dna
 from .. import DNApyBaseClass, DNApyBaseDrawingClass
 
-import .featureedit_GUI
+from . import featureedit_GUI
 
 # drawing
 import cairo
@@ -56,7 +56,7 @@ import pangocairo # for glyphs and text
 import math
 
 # for color function
-import ..colcol
+from .. import colcol
 
 
 from . import SETTINGS_DIR, ICONS_DIR

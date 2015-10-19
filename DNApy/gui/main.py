@@ -39,21 +39,22 @@ import wx
 from wx.lib.pubsub import setupkwargs #this line not required in wxPython2.9.
                                       #See documentation for more detail
 from wx.lib.pubsub import pub
-import pyperclip
 import subprocess
 
 
 #DNApy modules
-import .dna
-import .genbank
-import .output
-import .enzyme
+from . import SETTINGS_DIR, ICONS_DIR
+from .. import pyperclip
+from .. import dna
+from .. import genbank
+from .. import output
+from .. import enzyme
 
-from .base_class import DNApyBaseClass
+from .. import DNApyBaseClass
 
 #GUI components
 #import dnaeditor_GUI
-from .gui import dnaEditorCairo_GUI, featureedit_GUI, featurelist_GUI, plasmid_GUI, genbank_GUI, enzyme_GUI
+from . import dnaEditorCairo_GUI, featureedit_GUI, featurelist_GUI, plasmid_GUI, genbank_GUI, enzyme_GUI
 #import mixed_base_codons_GUI
 
 
@@ -65,18 +66,13 @@ from .gui import dnaEditorCairo_GUI, featureedit_GUI, featurelist_GUI, plasmid_G
 #make rightklick menus
 
 
-files={}   #dictionary with all configuration files
-
-files['default_dir'] = os.path.dirname(os.path.realpath(__file__))
-#files['default_dir']=string.replace(files['default_dir'], "\\", "/")
-#files['default_dir']=string.replace(files['default_dir'], "library.zip", "")
+files				 = {}   #list with all configuration files
+files['default_dir'] = SETTINGS_DIR
 
 variables_file = os.path.join(files['default_dir'], "variables")   ##path to the file of the global variables
 settings_file = os.path.join(files['default_dir'], "settings")   ##path to the file of the global settings
 execfile(variables_file) #gets all the pre-assigned variables
 execfile(settings_file) #gets all the pre-assigned settings
-
-
 
 
 class DNAedit(DNApyBaseClass):
@@ -824,45 +820,45 @@ Put Table here
 
 
         #New Document
-        self.frame_1_toolbar.AddLabelTool(500, "New Document", wx.Bitmap(files['default_dir']+"/icon/new.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'New File', "New File") #last one is the one displayed in status bar
+        self.frame_1_toolbar.AddLabelTool(500, "New Document", wx.Bitmap(os.path.join(ICONS_DIR, "new.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'New File', "New File") #last one is the one displayed in status bar
         wx.EVT_TOOL(self, 500, self.new_file)
         #Open File
-        self.frame_1_toolbar.AddLabelTool(501, "Open File", wx.Bitmap(files['default_dir']+"/icon/open.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Load File', 'Load File')
+        self.frame_1_toolbar.AddLabelTool(501, "Open File", wx.Bitmap(os.path.join(ICONS_DIR, "open.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Load File', 'Load File')
         wx.EVT_TOOL(self, 501, self.open_file)
         #Save current file
-        self.frame_1_toolbar.AddLabelTool(502, "Save current file", wx.Bitmap(files['default_dir']+"/icon/save.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Save File', 'Save File')
+        self.frame_1_toolbar.AddLabelTool(502, "Save current file", wx.Bitmap(os.path.join(ICONS_DIR, "save.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Save File', 'Save File')
         wx.EVT_TOOL(self, 502, self.save_file)
         #Save as
-        self.frame_1_toolbar.AddLabelTool(503, "Save as", wx.Bitmap(files['default_dir']+"/icon/saveas.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Save File As', 'Save File As')
+        self.frame_1_toolbar.AddLabelTool(503, "Save as", wx.Bitmap(os.path.join(ICONS_DIR, "saveas.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Save File As', 'Save File As')
         wx.EVT_TOOL(self, 503, self.save_as_file)
         #cut
-        self.frame_1_toolbar.AddLabelTool(504, "cut", wx.Bitmap(files['default_dir']+"/icon/cut.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'cut', 'cut')
+        self.frame_1_toolbar.AddLabelTool(504, "cut", wx.Bitmap(os.path.join(ICONS_DIR, "cut.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'cut', 'cut')
         wx.EVT_TOOL(self, 504, self.cut)
         #copy
-        self.frame_1_toolbar.AddLabelTool(505, "copy", wx.Bitmap(files['default_dir']+"/icon/copy.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'copy', 'copy')
+        self.frame_1_toolbar.AddLabelTool(505, "copy", wx.Bitmap(os.path.join(ICONS_DIR, "copy.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'copy', 'copy')
         wx.EVT_TOOL(self, 505, self.copy)
         #paste
-        self.frame_1_toolbar.AddLabelTool(506, "paste", wx.Bitmap(files['default_dir']+"/icon/paste.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'paste', 'paste')
+        self.frame_1_toolbar.AddLabelTool(506, "paste", wx.Bitmap(os.path.join(ICONS_DIR, "paste.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'paste', 'paste')
         wx.EVT_TOOL(self, 506, self.paste)
         #Undo
-        self.frame_1_toolbar.AddLabelTool(513, "Undo", wx.Bitmap(files['default_dir']+"/icon/undo.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Undo', 'Undo')
+        self.frame_1_toolbar.AddLabelTool(513, "Undo", wx.Bitmap(os.path.join(ICONS_DIR, "undo.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Undo', 'Undo')
         wx.EVT_TOOL(self, 513, self.Undo)
         #Redo
-        self.frame_1_toolbar.AddLabelTool(514, "Redo", wx.Bitmap(files['default_dir']+"/icon/redo.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Redo', 'Redo')
+        self.frame_1_toolbar.AddLabelTool(514, "Redo", wx.Bitmap(os.path.join(ICONS_DIR, "redo.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Redo', 'Redo')
         wx.EVT_TOOL(self, 514, self.Redo)
         #Print current window
-#       self.frame_1_toolbar.AddLabelTool(510, "Print current window", wx.Bitmap(files['default_dir']+"/icon/print.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Print Current Window', 'Print Current Window')
+#       self.frame_1_toolbar.AddLabelTool(510, "Print current window", wx.Bitmap(os.path.join(ICONS_DIR, "print.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Print Current Window', 'Print Current Window')
 #       wx.EVT_TOOL(self, 510, self.print_setup)
 
-        self.frame_1_toolbar.AddCheckTool(511, wx.Bitmap(files['default_dir']+"/icon/search.png", wx.BITMAP_TYPE_ANY), wx.Bitmap(files['default_dir']+"/icon/search.png", wx.BITMAP_TYPE_ANY), 'Find', 'Find')
+        self.frame_1_toolbar.AddCheckTool(511, wx.Bitmap(os.path.join(ICONS_DIR, "seacrh.png"), wx.BITMAP_TYPE_ANY), wx.Bitmap(files['default_dir']+"/icon/search.png", wx.BITMAP_TYPE_ANY), 'Find', 'Find')
         wx.EVT_TOOL(self, 511, self.toggle_searchandmutate_toolbar)
 
-        self.frame_1_toolbar.AddCheckTool(512, wx.Bitmap(files['default_dir']+"/icon/mutate.png", wx.BITMAP_TYPE_ANY), wx.Bitmap(files['default_dir']+"/icon/search.png", wx.BITMAP_TYPE_ANY), 'Mutate', 'Mutate')
+        self.frame_1_toolbar.AddCheckTool(512, wx.Bitmap(os.path.join(ICONS_DIR, "mutate.png"), wx.BITMAP_TYPE_ANY), wx.Bitmap(files['default_dir']+"/icon/search.png", wx.BITMAP_TYPE_ANY), 'Mutate', 'Mutate')
         wx.EVT_TOOL(self, 512, self.toggle_searchandmutate_toolbar)
 
 
         #enzyme selector
-        self.frame_1_toolbar.AddLabelTool(515, "Restriction Enzymes", wx.Bitmap(files['default_dir']+"/icon/restrictionEnzyme.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Restriction Enzymes', 'Restriction Enzymes')
+        self.frame_1_toolbar.AddLabelTool(515, "Restriction Enzymes", wx.Bitmap(os.path.join(ICONS_DIR, "restrictionEnzyme.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Restriction Enzymes', 'Restriction Enzymes')
         wx.EVT_TOOL(self, 515, self.SelectEnzymes)
 
 
@@ -942,16 +938,16 @@ Put Table here
         #'go'
         if typeof == 'Find':
             #find previous
-            self.frame_2_toolbar.AddLabelTool(507, "Find previous", wx.Bitmap(files['default_dir']+"/icon/up.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Find previous', 'Find previous')
+            self.frame_2_toolbar.AddLabelTool(507, "Find previous", wx.Bitmap(os.path.join(ICONS_DIR, "up.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Find previous', 'Find previous')
             wx.EVT_TOOL(self, 507, self.find_previous)
             #find next
-            self.frame_2_toolbar.AddLabelTool(509, "Find next", wx.Bitmap(files['default_dir']+"/icon/down.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Find next', 'Find next')
+            self.frame_2_toolbar.AddLabelTool(509, "Find next", wx.Bitmap(os.path.join(ICONS_DIR, "down.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Find next', 'Find next')
             wx.EVT_TOOL(self, 509, self.find_next)
             #search glass
-            self.frame_2_toolbar.AddLabelTool(604, "Find", wx.Bitmap(files['default_dir']+"/icon/search.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Find', 'Find')
+            self.frame_2_toolbar.AddLabelTool(604, "Find", wx.Bitmap(os.path.join(ICONS_DIR, "search.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Find', 'Find')
             wx.EVT_TOOL(self, 604, self.find)
         elif typeof == 'Mutate':
-            self.frame_2_toolbar.AddLabelTool(604, "Mutate", wx.Bitmap(files['default_dir']+"/icon/up.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Mutate', 'Mutate')
+            self.frame_2_toolbar.AddLabelTool(604, "Mutate", wx.Bitmap(os.path.join(ICONS_DIR, "up.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Mutate', 'Mutate')
             wx.EVT_TOOL(self, 604, self.mutate)
 
     def find(self, evt):

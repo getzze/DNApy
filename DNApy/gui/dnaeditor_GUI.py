@@ -37,17 +37,17 @@ import wx.stc
 import string
 import sys
 import os
-import pyperclip
 import copy
 
 
-import ..genbank
-import ..output
-import ..dna
+from .. import pyperclip
+from .. import genbank
+from .. import output
+from .. import dna
 from .. import DNApyBaseClass
 
-import .featurelist_GUI
-import .plasmid_GUI
+from . import featurelist_GUI
+from . import plasmid_GUI
 
 #TODO
 #fix statusbar in general

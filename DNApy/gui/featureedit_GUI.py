@@ -44,7 +44,7 @@ import string
 import copy
 import types  #for asserts and tests
 
-import ..genbank
+from .. import genbank
 from .. import DNApyBaseClass
 
 from . import SETTINGS_DIR, ICONS_DIR

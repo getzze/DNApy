@@ -31,7 +31,7 @@
 from __future__ import absolute_import
 
 from ..output import create
-import ..genbank
+from .. import genbank
 from .. import DNApyBaseClass
 
 

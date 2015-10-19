@@ -37,7 +37,7 @@ import math
 import collections
 
 
-import ..genbank
+from .. import genbank
 from .. import DNApyBaseClass
 
 

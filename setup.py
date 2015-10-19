@@ -32,7 +32,7 @@ setup(name='DNApy',
         keywords='DNA plasmid',
         packages=find_packages(),
         entry_points={
-                'console_scripts': ['DNApy = DNApy.main:startgui'],
+                'console_scripts': ['DNApy = DNApy.gui.main:startgui'],
         },
         install_requires=install_requirements,
 )

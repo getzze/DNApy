@@ -47,11 +47,11 @@ import string
 
 import copy
 
-import ..colcol
-import ..genbank
+from .. import colcol
+from .. import genbank
 from .. import DNApyBaseClass
-import .featureedit_GUI
 
+from . import featureedit_GUI
 from . import SETTINGS_DIR, ICONS_DIR
 
 files				 = {}   #list with all configuration files
