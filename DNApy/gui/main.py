@@ -249,11 +249,12 @@ class DNApy(wx.Frame):
 
 
         elif self.fileopen == True: #if a file IS open, make a new window
-            subprocess.Popen("python ~/Python_files/DNApy/main.py 1", shell=True) #this needs a fix for windows
+            main_file = os.path.realpath(__file__)
+            subprocess.Popen("python {} 1".format(main_file), shell=True) #this needs a fix for windows
 
     def open_file(self, evt):
         '''Function for opening file'''
-        self.dir_to_open = default_filepath
+        #self.dir_to_open = default_filepath
         self.dir_to_open = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) #current script directory
         dlg = wx.FileDialog( self, style=wx.OPEN|wx.FILE_MUST_EXIST,   defaultDir=self.dir_to_open ,wildcard='GenBank files (*.gb)|*|Any file (*)|*')
 
@@ -850,10 +851,10 @@ Put Table here
 #       self.frame_1_toolbar.AddLabelTool(510, "Print current window", wx.Bitmap(os.path.join(ICONS_DIR, "print.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, 'Print Current Window', 'Print Current Window')
 #       wx.EVT_TOOL(self, 510, self.print_setup)
 
-        self.frame_1_toolbar.AddCheckTool(511, wx.Bitmap(os.path.join(ICONS_DIR, "seacrh.png"), wx.BITMAP_TYPE_ANY), wx.Bitmap(files['default_dir']+"/icon/search.png", wx.BITMAP_TYPE_ANY), 'Find', 'Find')
+        self.frame_1_toolbar.AddCheckTool(511, wx.Bitmap(os.path.join(ICONS_DIR, "search.png"), wx.BITMAP_TYPE_ANY), wx.Bitmap(os.path.join(ICONS_DIR, "search.png"), wx.BITMAP_TYPE_ANY), 'Find', 'Find')
         wx.EVT_TOOL(self, 511, self.toggle_searchandmutate_toolbar)
 
-        self.frame_1_toolbar.AddCheckTool(512, wx.Bitmap(os.path.join(ICONS_DIR, "mutate.png"), wx.BITMAP_TYPE_ANY), wx.Bitmap(files['default_dir']+"/icon/search.png", wx.BITMAP_TYPE_ANY), 'Mutate', 'Mutate')
+        self.frame_1_toolbar.AddCheckTool(512, wx.Bitmap(os.path.join(ICONS_DIR, "mutate.png"), wx.BITMAP_TYPE_ANY), wx.Bitmap(os.path.join(ICONS_DIR, "search.png"), wx.BITMAP_TYPE_ANY), 'Mutate', 'Mutate')
         wx.EVT_TOOL(self, 512, self.toggle_searchandmutate_toolbar)
 
 
@@ -1240,11 +1241,6 @@ Put Table here
         self.menubar.Append(self.help, "Help")
 
         self.SetMenuBar(self.menubar)
-
-
-
-
-
 
 
 

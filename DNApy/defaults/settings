@@ -1,5 +1,5 @@
 ## Default filepath ##
-default_filepath = '/home/martin/Work/4_LA/Vectors/'
+default_filepath = "~"
 
 ## Windowsize ##
 windowsize = (1300, 650)

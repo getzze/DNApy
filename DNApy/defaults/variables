@@ -1,6 +1,5 @@
-files['icon']="icon"
-files['font']="font"
-files['size']=files['default_dir']+"size"
+files['font']= "font"
+files['size']= os.path.join(files['default_dir'], 'size')
 extensions={}
 extensions['as']=["as"]
 extensions['python']=["py", "python", "pyc"]
@@ -10,9 +9,5 @@ extensions['asp']=["asp"]
 extensions['c++']=["c", "cpp"]
 extensions['sql']=["sql", "sq"]
 #----------------------------------------------------------------------
-if wx.Platform == '__WXMSW__':
-    dir_separator="\\"
-else:
-    dir_separator="/"
-execfile(files['default_dir']+"/"+files['font'])
+execfile(os.path.join(files['default_dir'], files['font']))
 #----------------------------------------------------------------------             
