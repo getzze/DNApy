@@ -47,15 +47,12 @@ import types  #for asserts and tests
 import ..genbank
 from .. import DNApyBaseClass
 
+from . import SETTINGS_DIR, ICONS_DIR
 
 files				 = {}   #list with all configuration files
-files['default_dir'] = os.path.dirname(os.path.realpath(__file__))
+files['default_dir'] = SETTINGS_DIR
 settings_file        = os.path.join(files['default_dir'], "settings")   ##path to the file of the global settings
 execfile(settings_file) #gets all the pre-assigned settings
-
-
-ICON_FOLDER = "icon"
-
 
 
 
@@ -235,27 +232,27 @@ class FeatureEdit(DNApyBaseClass):
 		self.qualifier_list.InsertColumn(1, "Tag", format=wx.LIST_FORMAT_LEFT, width=250)
 #		self.qualifier_list.Bind(wx.EVT_LISTBOX_DCLICK, self.OnEditQualifier(None))
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "new_small.png")
+		imageFile = os.path.join(ICONS_DIR, "new_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		addqual = wx.BitmapButton(self, id=7, bitmap=image1, size = (image1.GetWidth()+15, image1.GetHeight()+15), name = "new")
 		self.Bind(wx.EVT_BUTTON, self.OnAddQualifier, id=7)
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "remove_small.png")
+		imageFile = os.path.join(ICONS_DIR, "remove_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		deletequal = wx.BitmapButton(self, id=8, bitmap=image1, size = (image1.GetWidth()+15, image1.GetHeight()+15), name = "remove")
 		self.Bind(wx.EVT_BUTTON, self.OnRemoveQualifier, id=8)
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "move_up.png")
+		imageFile = os.path.join(ICONS_DIR, "move_up.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		qualup = wx.BitmapButton(self, id=9, bitmap=image1, size = (image1.GetWidth()+15, image1.GetHeight()+15), name = "move up")
 		self.Bind(wx.EVT_BUTTON, self.OnMoveQualifierUp, id=9)
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "move_down.png")
+		imageFile = os.path.join(ICONS_DIR, "move_down.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		qualdown = wx.BitmapButton(self, id=10, bitmap=image1, size = (image1.GetWidth()+15, image1.GetHeight()+15), name = "move down")
 		self.Bind(wx.EVT_BUTTON, self.OnMoveQualifierDown, id=10)
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "edit.png")
+		imageFile = os.path.join(ICONS_DIR, "edit.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		qualedit = wx.BitmapButton(self, id=11, bitmap=image1, size = (image1.GetWidth()+15, image1.GetHeight()+15), name = "edit")
 		self.Bind(wx.EVT_BUTTON, self.OnEditQualifier, id=11)	

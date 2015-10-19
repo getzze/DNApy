@@ -59,8 +59,10 @@ import math
 import ..colcol
 
 
+from . import SETTINGS_DIR, ICONS_DIR
+
 files				 = {}   #list with all configuration files
-files['default_dir'] = os.path.dirname(os.path.realpath(__file__))
+files['default_dir'] = SETTINGS_DIR
 settings_file        = os.path.join(files['default_dir'], "settings")   ##path to the file of the global settings
 execfile(settings_file) #gets all the pre-assigned settings
 

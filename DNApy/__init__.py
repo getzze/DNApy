@@ -8,4 +8,7 @@ import logging
 
 from .base_class import DNApyBaseClass, DNApyBaseDrawingClass
 
+DEFAULT_SETTINGS_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "defaults")
+SETTINGS_DIR = DEFAULT_SETTINGS_DIR
+
 logging.getLogger(__name__).addHandler(logging.NullHandler())

@@ -52,14 +52,12 @@ import ..genbank
 from .. import DNApyBaseClass
 import .featureedit_GUI
 
+from . import SETTINGS_DIR, ICONS_DIR
+
 files				 = {}   #list with all configuration files
-files['default_dir'] = os.path.dirname(os.path.realpath(__file__))
+files['default_dir'] = SETTINGS_DIR
 settings_file        = os.path.join(files['default_dir'], "settings")   ##path to the file of the global settings
 execfile(settings_file) #gets all the pre-assigned settings
-
-
-ICON_FOLDER = "icon"
-
 
 
 
@@ -83,23 +81,23 @@ class FeatureList(DNApyBaseClass):
 		
 		#buttons
 		padding = 10 #how much to add around the picture
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "new_small.png")
+		imageFile = os.path.join(ICONS_DIR, "new_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		newfeature = wx.BitmapButton(self, id=1, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "remove_small.png")
+		imageFile = os.path.join(ICONS_DIR, "remove_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		deletefeature = wx.BitmapButton(self, id=2, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "move_up.png")
+		imageFile = os.path.join(ICONS_DIR, "move_up.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		moveup = wx.BitmapButton(self, id=4, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "move_down.png")
+		imageFile = os.path.join(ICONS_DIR, "move_down.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		movedown = wx.BitmapButton(self, id=5, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "edit.png")
+		imageFile = os.path.join(ICONS_DIR, "edit.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		edit = wx.BitmapButton(self, id=6, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "edit")
 		

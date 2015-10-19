@@ -59,15 +59,12 @@ import ..genbank
 import ..colcol
 import ..options					# new option file to make options easy to change in one file (or settings.txt)
 
+from . import SETTINGS_DIR, ICONS_DIR
+
 files				 = {}   #list with all configuration files
-files['default_dir'] = os.path.dirname(os.path.realpath(__file__))
+files['default_dir'] = SETTINGS_DIR
 settings_file        = os.path.join(files['default_dir'], "settings")   ##path to the file of the global settings
 execfile(settings_file) #gets all the pre-assigned settings
-
-
-ICON_FOLDER = "icon"
-
-
 
 
 class plasmidstore():
@@ -1395,28 +1392,28 @@ class PlasmidView2(DNApyBaseDrawingClass):
 		#buttons
 		padding = 10 #how much to add around the picture
 
-		imageFile 	= os.path.join(files['default_dir'], ICON_FOLDER, "circle.png")
+		imageFile 	= os.path.join(ICONS_DIR, "circle.png")
 		image1 		= wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		circle 		= wx.BitmapButton(panel1, id=10, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile 	= os.path.join(files['default_dir'], ICON_FOLDER, "group.png")
+		imageFile 	= os.path.join(ICONS_DIR, "group.png")
 		image1 		= wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		group 		= wx.BitmapButton(panel1, id=11, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "radiating.png")
+		imageFile = os.path.join(ICONS_DIR, "radiating.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		radiating = wx.BitmapButton(panel1, id=12, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "new_small.png")
+		imageFile = os.path.join(ICONS_DIR, "new_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		newfeature = wx.BitmapButton(panel1, id=1, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "remove_small.png")
+		imageFile = os.path.join(ICONS_DIR, "remove_small.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		deletefeature = wx.BitmapButton(panel1, id=2, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "share")
 
-		imageFile = os.path.join(files['default_dir'], ICON_FOLDER, "edit.png")
+		imageFile = os.path.join(ICONS_DIR, "edit.png")
 		image1 = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		edit = wx.BitmapButton(panel1, id=6, bitmap=image1, size = (image1.GetWidth()+padding, image1.GetHeight()+padding), name = "edit")
 
