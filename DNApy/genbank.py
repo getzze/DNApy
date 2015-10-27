@@ -38,7 +38,10 @@
 #match features with mandatory and optional qualifiers
 #add a function that checks that everything is ok. I.e. that it conforms to the genbank format.
 #make changes to how qualifiers are parsed. For example /qualifier=xyz, the '=' is not always there...
+from __future__ import absolute_import, print_function
 
+
+import logging
 import copy
 import re
 import sys
@@ -50,6 +53,7 @@ from . import pyperclip
 from . import oligo_localizer
 from . import peptide_localizer
 
+logger = logging.getLogger(__name__)
 
 #the feature class is not currently used. 
 #Something I started working on and may or may not continue.
@@ -172,15 +176,16 @@ class gbobject(object):
 		self.gbfile['comments'] = None
 		self.gbfile['dbsource'] = None	#not sure this is a valid keyword
 		self.gbfile['primary'] = None	#not sure this is a valid keyword	
-		self.gbfile['features'] = None
+		self.gbfile['features'] = []
 		self.gbfile['origin'] = None
 		self.gbfile['contig'] = None		
-		self.gbfile['dna'] = None
+		self.gbfile['dna'] = ''
 
 		self.gbfile['filepath'] = filepath
 
 		self.fileName = 'New DNA' #name of the file/plasmid name
 
+		self.clutter = False
 		
 		## compile regular expressions used for parsing ##
 		self._re_locus = re.compile(r'''
@@ -640,8 +645,9 @@ class gbobject(object):
 		assert type(index) == int, "Error, index must be an integer."
 		try:
 			return self.gbfile['features'][index]['qualifiers'][0].split('=')[1]
-		except:
-			print('This is not a valid index')
+		except Exception as e:
+			logger.exception("This is not a valid index.")
+			print("This is not a valid index: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			return False
 
 
@@ -649,8 +655,9 @@ class gbobject(object):
 		'''Get feature type (key) for feature with given index'''
 		try:
 			return self.gbfile['features'][index]['key']
-		except:
-			print('This is not a valid index')
+		except Exception as e:
+			logger.exception("This is not a valid index.")
+			print("This is not a valid index: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			return False
 
 	def set_feature_type(self, feature, newkey):
@@ -666,8 +673,9 @@ class gbobject(object):
 		'''Get whether a feature is on leading or complement DNA strand'''
 		try:
 			return self.gbfile['features'][index]['complement']
-		except:
-			print('This is not a valid index')
+		except Exception as e:
+			logger.exception("This is not a valid index.")
+			print("This is not a valid index: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			return False
 
 	def set_feature_complement(self, feature, complement):
@@ -684,8 +692,9 @@ class gbobject(object):
 		'''Get whether a feature with multiple locations should be joined or not'''
 		try:
 			return self.gbfile['features'][index]['join']
-		except:
-			print('This is not a valid index')
+		except Exception as e:
+			logger.exception("This is not a valid index.")
+			print("This is not a valid index: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			return False
 
 	def set_feature_join(self, feature, join):
@@ -702,8 +711,9 @@ class gbobject(object):
 		'''Get whether a feature with multiple locations should be indicated as having the specified order or not'''
 		try:
 			return self.gbfile['features'][index]['order']
-		except:
-			print('This is not a valid index')
+		except Exception as e:
+			logger.exception("This is not a valid index.")
+			print("This is not a valid index: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			return False
 
 	def set_feature_order(self, feature, order):
@@ -720,8 +730,9 @@ class gbobject(object):
 		'''Gets all locations for a feature'''
 		try:
 			return self.gbfile['features'][index]['location']
-		except:
-			print('This is not a valid index')
+		except Exception as e:
+			logger.exception("This is not a valid index.")
+			print("This is not a valid index: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			return False
 
 	def set_feature_location(self, feature, newlocation):
@@ -775,7 +786,9 @@ class gbobject(object):
 				assert (start == 0 and finish == 0) == False
 				assert start <= finish
 				assert finish <= len(self.GetDNA())
-		except:
+		except Exception as e:
+			logger.exception("This is not a valid index.")
+			print("This is not a valid index: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			result = False
 		return result
 
@@ -783,14 +796,18 @@ class gbobject(object):
 		'''Returns all qualifiers for a feature'''
 		try:
 			return self.gbfile['features'][index]['qualifiers']
-		except:
+		except Exception as e:
+			logger.exception("This is not a valid index.")
+			print("This is not a valid index: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			raise ValueError('This is not a valid index')
 
 	def get_qualifier(self, index, number):
 		'''Returns specified qualifier for specified feature'''
 		try:
 			return self.gbfile['features'][index]['qualifiers'][number][1:].split('=')
-		except:
+		except Exception as e:
+			logger.exception("This is not a valid index.")
+			print("This is not a valid index: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			raise ValueError('Index or number is not valid')
 
 	def set_qualifier(self, index, number, qualifier, tag):
@@ -802,7 +819,9 @@ class gbobject(object):
 		try:
 			self.gbfile['features'][index]['qualifiers'][number] = '/%s=%s' % (qualifier, tag)
 			self.add_file_version()
-		except:
+		except Exception as e:
+			logger.exception("Error setting qualifier.")
+			print("Error setting qualifier: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			raise IOError('Error setting qualifier')
 
 
@@ -1242,19 +1261,12 @@ class gbobject(object):
 
 	def GetDNA(self, start=1, finish=-1):
 		'''Get the entire DNA sequence from the self.gbfile'''
-		if self.gbfile['dna'] == None:
-			return None
-		elif start == 1 and finish == -1:
-			return self.gbfile['dna']
-		else:
-			if finish == -1:
-				finish = len(self.GetDNA())
-			
-			assert (type(start) == int and type(finish) == int), 'Function requires two integers.'
-			assert start <= finish, 'Starting point must be before finish.'
-			assert start > 0 and start <= len(self.gbfile['dna']), 'Starting point must be between 1 and the the DNA length. %s is not' % start
-			assert finish > 0 and finish <= len(self.gbfile['dna']), 'Finish must be between 1 and the the DNA length. %s is not' % finish
-			return self.gbfile['dna'][start-1:finish]
+		try:
+			min_ = max(0,start-1)
+			max_ = min(finish,len(self.gbfile['dna']))
+			return self.gbfile['dna'][min_:max_]
+		except IndexError:
+			raise
 	
 	def GetFilepath(self):
 		'''Get the self.filepath for the opened file'''
@@ -1323,7 +1335,7 @@ indeces >-1 are feature indeces'''
 		assert type(searchRC) == bool, 'Error, searchRC must be True or False'
 		#empty search string
 		if searchstring=='':
-			print 'The searchstring is missing, please check your input'
+			print('The searchstring is missing, please check your input')
 			return []
 
 		#searching for a position (by number)
@@ -1421,7 +1433,7 @@ indeces >-1 are feature indeces'''
 
 		#empty search string
 		if searchstring=='':
-			print 'The searchstring is missing, please check your input'
+			print('The searchstring is missing, please check your input')
 			return []
 
 		#searching for a position (by number)
@@ -1492,7 +1504,7 @@ indeces >-1 are feature indeces'''
 		assert type(searchstring) == str or type(searchstring) == unicode or type(searchstring) == int, 'Error, search takes a string of DNA or a string of numbers as input.'
 
 		if searchstring=='':
-			print 'The searchstring is missing, please check your input'
+			print('The searchstring is missing, please check your input')
 			return []
 		elif type(searchstring) is int:
 			#assert that the integer is within the number of features
@@ -1684,7 +1696,9 @@ indeces >-1 are feature indeces'''
 				templocation += location[n]
 		try:
 			start, finish = templocation.split('..')
-		except:
+		except Exception as e:
+			logger.exception("Could not get location.")
+			print("Could not get location: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			start = templocation
 			finish = templocation
 		return int(start), int(finish)

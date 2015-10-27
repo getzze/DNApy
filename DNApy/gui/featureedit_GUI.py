@@ -34,6 +34,7 @@
 #change how qualifiers are edited
 from __future__ import absolute_import, unicode_literals
 
+import logging
 import ast
 import wx
 from wx.lib.agw import ultimatelistctrl as ULC
@@ -44,10 +45,11 @@ import string
 import copy
 import types  #for asserts and tests
 
-from .. import genbank
 from . import DNApyBaseClass
 
 from . import SETTINGS_DIR, ICONS_DIR
+
+logger = logging.getLogger(__name__)
 
 files				 = {}   #list with all configuration files
 files['default_dir'] = SETTINGS_DIR
@@ -136,17 +138,12 @@ class QualifierEdit(wx.Dialog):
 		self.EndModal(wx.ID_CANCEL)
 		
 
-
-
-
-
-
-
 class FeatureEdit(DNApyBaseClass):
 	'''This class makes a panel with a field for editing feature properties and a list for displaying and editing qualifiers'''
-	def __init__(self, parent, id):
+	def __init__(self, parent, id, genbank):
 		self.parent = parent
 		wx.Panel.__init__(self, parent)
+		self.genbank = genbank
 
 		##
 		# first panel, for editing feature
@@ -295,25 +292,25 @@ class FeatureEdit(DNApyBaseClass):
 
 	def update_ownUI(self):
 		'''Updates all fields depending on which feature is chosen'''
-		if len(genbank.gb.get_all_features()) == 0:
+		if len(self.genbank.gb.get_all_features()) == 0:
 			pass
 		else:
-			index = int(copy.copy(genbank.feature_selection))
+			index = int(copy.copy(self.genbank.feature_selection))
 	
 			#update fields
-			self.featuretext.ChangeValue(genbank.gb.get_feature_label(index))
-			self.type_combobox.SetStringSelection(genbank.gb.get_feature_type(index)) #update type
+			self.featuretext.ChangeValue(self.genbank.gb.get_feature_label(index))
+			self.type_combobox.SetStringSelection(self.genbank.gb.get_feature_type(index)) #update type
 
 			locationstring = ''
-			for location in genbank.gb.get_feature_location(index):
+			for location in self.genbank.gb.get_feature_location(index):
 				if locationstring != '':
 					locationstring += ', '
 				locationstring += str(location)
 			self.location.ChangeValue(locationstring) #update location
 
-			self.complementbox.SetValue(genbank.gb.get_feature_complement(index)) #update complement
-			self.joinbox.SetValue(genbank.gb.get_feature_join(index)) #update join
-			self.orderbox.SetValue(genbank.gb.get_feature_order(index)) #update order
+			self.complementbox.SetValue(self.genbank.gb.get_feature_complement(index)) #update complement
+			self.joinbox.SetValue(self.genbank.gb.get_feature_join(index)) #update join
+			self.orderbox.SetValue(self.genbank.gb.get_feature_order(index)) #update order
 
 			#update qualifier field
 			self.update_qualifiers()
@@ -336,8 +333,8 @@ class FeatureEdit(DNApyBaseClass):
 
 	def OnAddQualifier(self, event):
 		'''For adding new qualifier'''
-		index = int(copy.copy(genbank.feature_selection))
-		feature = genbank.gb.get_feature(index)
+		index = int(copy.copy(self.genbank.feature_selection))
+		feature = self.genbank.gb.get_feature(index)
 		qualifier = 'label'
 		tag = 'None'
 
@@ -348,7 +345,7 @@ class FeatureEdit(DNApyBaseClass):
 			qualifier = str(dlg.qualifier_combobox.GetValue())
 			tag = str(dlg.tag_field.GetText())
 		
-			genbank.gb.add_qualifier(feature, '/%s=%s' % (qualifier, tag))
+			self.genbank.gb.add_qualifier(feature, '/%s=%s' % (qualifier, tag))
 			self.update_ownUI()
 
 			number = self.qualifier_list.GetItemCount()-1
@@ -359,13 +356,13 @@ class FeatureEdit(DNApyBaseClass):
 
 	def OnRemoveQualifier(self, event):
 		'''For removing existing qualifier'''
-		index = int(copy.copy(genbank.feature_selection)) #feature selected
-		feature = genbank.gb.get_feature(index)
+		index = int(copy.copy(self.genbank.feature_selection)) #feature selected
+		feature = self.genbank.gb.get_feature(index)
 		number = self.qualifier_list.GetFirstSelected() #qualifier selected
 		items = self.qualifier_list.GetItemCount() #number of qualifiers
 
 		if items != 1: #don't delete last qualifier
-			genbank.gb.remove_qualifier(feature, number)
+			self.genbank.gb.remove_qualifier(feature, number)
 			self.update_ownUI()
 			self.update_globalUI()
 
@@ -377,10 +374,10 @@ class FeatureEdit(DNApyBaseClass):
 
 	def OnMoveQualifierUp(self, event):
 		'''Move qualifier up one step in the list'''
-		index = int(copy.copy(genbank.feature_selection))
-		feature = genbank.gb.get_feature(index)
+		index = int(copy.copy(self.genbank.feature_selection))
+		feature = self.genbank.gb.get_feature(index)
 		number = self.qualifier_list.GetFirstSelected()
-		genbank.gb.move_qualifier(feature, number, 'u')
+		self.genbank.gb.move_qualifier(feature, number, 'u')
 		self.update_ownUI()
 		self.update_globalUI()
 
@@ -391,10 +388,10 @@ class FeatureEdit(DNApyBaseClass):
 
 	def OnMoveQualifierDown(self, event):
 		'''Move qualifier down one step in the list'''
-		index = int(copy.copy(genbank.feature_selection))
-		feature = genbank.gb.get_feature(index)
+		index = int(copy.copy(self.genbank.feature_selection))
+		feature = self.genbank.gb.get_feature(index)
 		number = self.qualifier_list.GetFirstSelected()
-		genbank.gb.move_qualifier(feature, number, 'd')
+		self.genbank.gb.move_qualifier(feature, number, 'd')
 		self.update_ownUI()
 		self.update_globalUI()
 
@@ -405,10 +402,10 @@ class FeatureEdit(DNApyBaseClass):
 
 	def OnEditQualifier(self, event):
 		'''Make popup window where qualifier and tag can be edited'''
-		index = int(copy.copy(genbank.feature_selection))
-		feature = genbank.gb.get_feature(index)
+		index = int(copy.copy(self.genbank.feature_selection))
+		feature = self.genbank.gb.get_feature(index)
 		number = self.qualifier_list.GetFirstSelected()
-		qualifier, tag = genbank.gb.get_qualifier(index, number) #get actual info for that qualifier
+		qualifier, tag = self.genbank.gb.get_qualifier(index, number) #get actual info for that qualifier
 
 		#make popup window with qualifier editing capabilities
 		dlg = QualifierEdit(qualifier, tag) # creation of a panel in the frame
@@ -419,7 +416,7 @@ class FeatureEdit(DNApyBaseClass):
 		dlg.Destroy()
 
 		#update file
-		genbank.gb.set_qualifier(index, number, qualifier, tag)
+		self.genbank.gb.set_qualifier(index, number, qualifier, tag)
 		self.update_ownUI()
 		self.update_globalUI()
 		self.update_qualifier_selection(index, number)
@@ -435,9 +432,9 @@ class FeatureEdit(DNApyBaseClass):
 	def ComplementCheckboxOnSelect(self, event):
 		'''Toggle whether the feature is on the complement strand or not'''
 		newcomplement = self.complementbox.GetValue()
-		index = int(copy.copy(genbank.feature_selection))
-		feature = genbank.gb.get_feature(index)
-		genbank.gb.set_feature_complement(feature, newcomplement)
+		index = int(copy.copy(self.genbank.feature_selection))
+		feature = self.genbank.gb.get_feature(index)
+		self.genbank.gb.set_feature_complement(feature, newcomplement)
 		self.update_ownUI()
 		self.update_globalUI()
 
@@ -446,9 +443,9 @@ class FeatureEdit(DNApyBaseClass):
 	def JoinCheckboxOnSelect(self, event):
 		'''Toggle whether a feature with multiple locations should be joined or not'''
 		newjoin = self.joinbox.GetValue()
-		index = int(copy.copy(genbank.feature_selection))
-		feature = genbank.gb.get_feature(index)
-		genbank.gb.set_feature_join(feature, newjoin)
+		index = int(copy.copy(self.genbank.feature_selection))
+		feature = self.genbank.gb.get_feature(index)
+		self.genbank.gb.set_feature_join(feature, newjoin)
 		self.update_ownUI()
 		self.update_globalUI()
 
@@ -456,18 +453,18 @@ class FeatureEdit(DNApyBaseClass):
 	def OrderCheckboxOnSelect(self, event):
 		'''Toggle whether a feature with ultiple locations should be indicated as being in a certain order or not'''
 		neworder = self.orderbox.GetValue()
-		index = int(copy.copy(genbank.feature_selection))
-		feature = genbank.gb.get_feature(index)
-		genbank.gb.set_feature_order(feature, neworder)
+		index = int(copy.copy(self.genbank.feature_selection))
+		feature = self.genbank.gb.get_feature(index)
+		self.genbank.gb.set_feature_order(feature, neworder)
 		self.update_ownUI()
 		self.update_globalUI()
 
 		
 	def TypeComboboxOnSelect(self, event):
 		newkey = self.type_combobox.GetValue()
-		index = int(copy.copy(genbank.feature_selection))
-		feature = genbank.gb.get_feature(index)
-		genbank.gb.set_feature_type(feature, newkey)
+		index = int(copy.copy(self.genbank.feature_selection))
+		feature = self.genbank.gb.get_feature(index)
+		self.genbank.gb.set_feature_type(feature, newkey)
 		self.update_ownUI()
 		self.update_globalUI()	
 		
@@ -483,13 +480,13 @@ class FeatureEdit(DNApyBaseClass):
 		else:
 			locationlist = [newlocation]
 
-		index = int(copy.copy(genbank.feature_selection))
-		feature = genbank.gb.get_feature(index)
+		index = int(copy.copy(self.genbank.feature_selection))
+		feature = self.genbank.gb.get_feature(index)
 		
-		is_valid = genbank.gb.IsValidLocation(locationlist) #test if location entry is valid
+		is_valid = self.genbank.gb.IsValidLocation(locationlist) #test if location entry is valid
 		if is_valid == True:
 			self.location.SetForegroundColour(wx.BLACK)
-			genbank.gb.set_feature_location(feature, locationlist)
+			self.genbank.gb.set_feature_location(feature, locationlist)
 			self.update_globalUI()
 
 		elif is_valid == False:
@@ -499,14 +496,14 @@ class FeatureEdit(DNApyBaseClass):
 	def FeatureFieldOnText(self, event):
 		newfeaturetext = str(self.featuretext.GetLineText(0)) #get location as string
 	
-		index = int(copy.copy(genbank.feature_selection))
+		index = int(copy.copy(self.genbank.feature_selection))
 		number = 0
-		qualifier = genbank.gb.get_qualifier(index, number)[0]
+		qualifier = self.genbank.gb.get_qualifier(index, number)[0]
 		tag = newfeaturetext
 		
 		if ('=' in newfeaturetext) == False: # '=' is reserved for parsing, so it can't be in the string'
 			self.featuretext.SetForegroundColour(wx.BLACK)
-			genbank.gb.set_qualifier(index, number, qualifier, tag)
+			self.genbank.gb.set_qualifier(index, number, qualifier, tag)
 			self.update_globalUI()
 			self.update_qualifiers()
 
@@ -514,9 +511,9 @@ class FeatureEdit(DNApyBaseClass):
 			self.featuretext.SetForegroundColour(wx.RED)	
 
 	def update_qualifiers(self):
-		index = int(copy.copy(genbank.feature_selection))
+		index = int(copy.copy(self.genbank.feature_selection))
 		self.qualifier_list.DeleteAllItems()
-		qualifiers = genbank.gb.get_qualifiers(index)
+		qualifiers = self.genbank.gb.get_qualifiers(index)
 		for qualifier in qualifiers:
 			col0, col1 = qualifier.split('=')
 			col0 = col0[1:]
@@ -560,41 +557,8 @@ class FeatureEditDialog(wx.Dialog):
 		self.feature_edit.update_globalUI()
 		self.Destroy()
 
-## how to fix the cancel option????? ##
-#	def OnCancel(self, event):
-#		'''Reject new feeature from the "new feature" popup'''
-#		genbank.gb.remove_feature(genbank.gb.get_feature(index=-1))
-#		genbank.feature_selection = 0
-#		self.Destroy()
-
 
 ######################################
 ######################################
-
-
-##### main loop
-class MyApp(wx.App):
-	def OnInit(self):
-		frame = wx.Frame(None, -1, title="Feature Edit", size=(700,300))
-		panel =	FeatureEdit(frame, -1)
-		frame.Centre()
-		frame.Show(True)
-		self.SetTopWindow(frame)
-		return True
-
-if __name__ == '__main__': #if script is run by itself and not loaded	
-
-	genbank.dna_selection = (0, 0)	 #variable for storing current DNA selection
-	genbank.feature_selection = False #variable for storing current feature selection
-
-	import sys
-	assert len(sys.argv) == 3, 'Error, this script requires a path to a genbank file and a feature index (integer) as an argument.'
-	print('Opening %s' % str(sys.argv[1]))
-
-	genbank.gb = genbank.gbobject(str(sys.argv[1])) #make a genbank object and read file
-	genbank.feature_selection = sys.argv[2]
-
-	app = MyApp(0)
-	app.MainLoop()
 
 

@@ -37,7 +37,7 @@
 # restrictionEnzyme()		store info about an restriction enzyme type II
 # initRestriction()			class to store and update all avialible restriction enzymes
 #
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import re
 import os
@@ -96,14 +96,15 @@ class restrictionEnzyme():
 # store and update info about restriction enzymes
 #
 class initRestriction():
-	def __init__(self):
+	def __init__(self, genbank_object):
 		'''Class to be loaded at every file change. It then evaluates the restrictionsites
 		and saves every Info. This enables fast access from every part of the software to 
 		restriction sites''' 
-		
+		self.genbank = genbank_object
+        
 		# on init get the current DNA
 		self.oldDna 	= ''
-		self.currentDNA = genbank.gb.gbfile["dna"]
+		self.currentDNA = self.genbank.gb.gbfile["dna"]
 		
 		# store for all enzymes and the sites
 		self.enzymeObj			= collections.OrderedDict()
@@ -117,7 +118,7 @@ class initRestriction():
 	def reloadEnzymes(self):
 		'''should be called if you want to reload the enzymes'''
 
-		self.currentDNA = genbank.gb.gbfile["dna"]
+		self.currentDNA = self.genbank.gb.gbfile["dna"]
 		
 		# just if the dna had changed, reload the restriction sites
 		if self.currentDNA != self.oldDna:
@@ -125,7 +126,7 @@ class initRestriction():
 			# updates cuts:
 			self.findRestrictionSites()
 			
-			self.oldDna 			= genbank.gb.gbfile["dna"]
+			self.oldDna 			= self.genbank.gb.gbfile["dna"]
 		
 		#return self.enzymeObj
 	
@@ -233,7 +234,7 @@ class initRestriction():
 			# circular dna
 			# we just inspect the region +-100 
 			# to find enzyme, which cut near 0 in a ciclic plasmid
-			if genbank.gb.gbfile['locus']['topology'] == 'circular':
+			if self.genbank.gb.gbfile['locus']['topology'] == 'circular':
 				circularDnaHelper = dnaseq[:100]  # helper of 200bp from 0 to 100
 			else:
 				circularDnaHelper = ''

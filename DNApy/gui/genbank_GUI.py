@@ -30,15 +30,14 @@
 #
 from __future__ import absolute_import, unicode_literals
 
-from .. import genbank
 from . import DNApyBaseClass, output_GUI
 
 
 class MyPanel(output_GUI.create):
 	'''Class to add update behaviour to the output panel'''
-	def __init__(self, parent, style):
+	def __init__(self, parent, style, genbank):
+		self.genbank = genbank
 		super(MyPanel, self).__init__(parent, style) 
-	
 
 
 
@@ -52,7 +51,7 @@ class MyPanel(output_GUI.create):
 
 	def update_ownUI(self):
 		'''Updates all fields depending on which feature is chosen'''
-		genbankfile = genbank.gb.make_gbstring()
+		genbankfile = self.genbank.gb.make_gbstring()
 		self.clear()
 		self.write(genbankfile, 'Text')
 

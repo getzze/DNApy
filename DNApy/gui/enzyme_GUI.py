@@ -30,6 +30,7 @@
 #
 from __future__ import absolute_import, unicode_literals
 
+import logging
 import wx
 import re
 import string
@@ -40,6 +41,8 @@ import collections
 from .. import RESOURCES_DIR
 from .. import genbank
 from . import DNApyBaseClass
+
+logger = logging.getLogger(__name__)
 
 
 class EnzymeSelector(DNApyBaseClass):
@@ -85,7 +88,7 @@ class EnzymeSelector(DNApyBaseClass):
 		self.labellb     = wx.StaticText(self, -1, '')
 		self.labellb.SetFont(font)
 		self.lb          = wx.ListBox(self,
-		                              size=(180, 300))
+									  size=(180, 300))
 		self.lb.Bind(wx.EVT_LISTBOX, self.onSelect)
 		
 		# textfield for automatet text input
@@ -124,7 +127,7 @@ class EnzymeSelector(DNApyBaseClass):
 		self.labellb2     = wx.StaticText(self, -1, 'selected enzymes')
 		self.labellb2.SetFont(font)
 		self.lb2 = wx.ListBox(self,
-		        	 size=(180, 300))
+					 size=(180, 300))
 		self.lb2.Bind(wx.EVT_LISTBOX_DCLICK, self.removeOne)
 
 
@@ -180,7 +183,7 @@ class EnzymeSelector(DNApyBaseClass):
 		label = btn.GetLabel()
 		message = "You just selected %s" % label
 		dlg = wx.MessageDialog(None, message, 'Message', 
-		                       wx.OK|wx.ICON_EXCLAMATION)
+							   wx.OK|wx.ICON_EXCLAMATION)
 		dlg.ShowModal()
 		dlg.Destroy()
 		
@@ -280,7 +283,7 @@ class EnzymeSelector(DNApyBaseClass):
 	# on select focus back on txt -> not working, why?
 	def onSelect(self, event):
 		#self.txt.SetFocus()
-        	return True
+			return True
 
 
 	# adds one item on buttonclick
@@ -486,7 +489,7 @@ class EnzymeDigestionDialog(wx.Dialog):
 		#set sizer
 		self.SetSizer(sizer)
 		
-    
+	
 
 
 class EnzymeDigestion(DNApyBaseClass):
@@ -539,7 +542,7 @@ class EnzymeDigestion(DNApyBaseClass):
 			# only add the name
 			selectableLadders.append(l[0])
 		# initialise ladder selector
-        	self.LadderSelect = wx.ComboBox(self,
+			self.LadderSelect = wx.ComboBox(self,
 				size=wx.DefaultSize,
 				choices=selectableLadders)
 		self.LadderSelect.Bind(wx.EVT_COMBOBOX, self.onSelect)
