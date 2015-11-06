@@ -33,8 +33,9 @@
 #fix long plasmid names
 #add 'dna ruler'
 #add rightclick menus
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 
+import logging
 import wx
 import cairo
 from wx.lib.wxcairo import ContextFromDC
@@ -42,7 +43,7 @@ import pango # for text
 import pangocairo # for glyphs and text
 
 from wx.lib.pubsub import setupkwargs 		#this line not required in wxPython2.9.
- 	                                  	#See documentation for more detail
+ 									  	#See documentation for more detail
 from wx.lib.pubsub import pub
 import copy
 import math
@@ -52,11 +53,11 @@ import sys
 import string
 
 
-from .. import genbank
-
 from . import DNApyBaseDrawingClass, DNApyBaseClass, colcol, featureedit_GUI
 
 from . import SETTINGS_DIR, ICONS_DIR
+
+logger = logging.getLogger(__name__)
 
 files				 = {}   #list with all configuration files
 files['default_dir'] = SETTINGS_DIR
@@ -114,8 +115,8 @@ class plasmidstore():
 
 
 class drawPlasmid(DNApyBaseDrawingClass):
-	''' This class handle the drawing of a plasmid'''
-	'''
+	''' This class handle the drawing of a plasmid
+	
 		it should draw:
 		- Plasmid 
 		- Features
@@ -153,9 +154,12 @@ class drawPlasmid(DNApyBaseDrawingClass):
 		   else:
 			recalculate the desired stuff
 
-		x. Highlight and interaction'''
-	def __init__(self, parent, id):
+		x. Highlight and interaction
+	'''
 	
+	def __init__(self, parent, id, genbank):
+	
+		self.genbank = genbank
 		# object to store our cacluations over time
 		self.plasmidstore 		= plasmidstore()		
 		self.radius 			= 25								# cairo unit
@@ -238,7 +242,7 @@ class drawPlasmid(DNApyBaseDrawingClass):
 		'''Receives requests for DNA selection and then sends it.'''
 		assert type(selection) == tuple, 'Error, dna selection must be a tuple'
 		selection = (int(selection[0]), int(selection[1]), int(selection[2]))
-		genbank.dna_selection = selection
+		self.genbank.dna_selection = selection
 		self.plasmidstore.interaction["selection"] = selection
 		self.update_globalUI()
 	
@@ -246,19 +250,19 @@ class drawPlasmid(DNApyBaseDrawingClass):
 
 	def set_cursor_position(self, position):
 		# set position of cursor for status bar:
-		genbank.cursor_position 					= position 
+		self.genbank.cursor_position 					= position 
 		self.plasmidstore.interaction["position"] 	= position
 
 	def updateSelection(self):
 		''' get selection from editor and update own store '''
-		selection =  genbank.dna_selection
+		selection =  self.genbank.dna_selection
 		assert type(selection) == tuple, 'Error, dna selection must be a tuple'
 		selection = (int(selection[0]), int(selection[1]), int(selection[2]))
 		self.plasmidstore.interaction["selection"] = selection
 	
 	def updatePosition(self):
 		''' get position from editor and update own store '''
-		position 									=  genbank.cursor_position
+		position 									=  self.genbank.cursor_position
 		self.plasmidstore.interaction["position"] 	= position
 
 	def hitName(self, name, index):
@@ -327,7 +331,7 @@ class drawPlasmid(DNApyBaseDrawingClass):
 
 		# feature to highlight or drag and drop?
 		if featureHit != False:
-			featurelist             = genbank.gb.get_all_feature_positions()
+			featurelist             = self.genbank.gb.get_all_feature_positions()
 			for i in range(0,len(featurelist)):
 				# load all the feature infos
 				featuretype, complement, start, finish, name, index = featurelist[i]
@@ -442,15 +446,15 @@ class drawPlasmid(DNApyBaseDrawingClass):
 		hit = self.HitTest() #this does not get the "true" feature index. Some featues are split and this is an index that accounts for that.
 		if hit is not False:
 			# get the index of this feature
-			featurelist             = genbank.gb.get_all_feature_positions()
+			featurelist             = self.genbank.gb.get_all_feature_positions()
 			for i in range(0,len(featurelist)):
 				# load all the feature infos
 				featuretype, complement, start, finish, name, index = featurelist[i]
 				hName = self.hitName(name, index)
 				if hit == hName:
-					genbank.feature_selection = copy.copy(index)
+					self.genbank.feature_selection = copy.copy(index)
 
-			dlg = featureedit_GUI.FeatureEditDialog(None, 'Edit Feature') # creation of a dialog with a title
+			dlg = featureedit_GUI.FeatureEditDialog(None, 'Edit Feature', genbank=self.genbank) # creation of a dialog with a title
 			dlg.ShowModal()
 			dlg.Center()
 		
@@ -559,7 +563,7 @@ class drawPlasmid(DNApyBaseDrawingClass):
 		'''
 		result = {}
 		for dictionary in dict_args:
-		    result.update(dictionary)
+			result.update(dictionary)
 		return result
 
 
@@ -575,11 +579,11 @@ class drawPlasmid(DNApyBaseDrawingClass):
 		
 		# compare the features to the previously calculated ones
 		featuresOld = self.plasmidstore.features
-		featuresNew = genbank.gb.get_all_feature_positions()
+		featuresNew = self.genbank.gb.get_all_feature_positions()
 		
 		if featuresNew != None:
 			# get the length once
-			self.dnaLength 			= float(len(genbank.gb.GetDNA()))
+			self.dnaLength 			= float(len(self.genbank.gb.GetDNA()))
 		else:
 			self.dnaLength 			= 1 # or 0 but this might cause problems if there is a division x/length
 
@@ -777,7 +781,9 @@ class drawPlasmid(DNApyBaseDrawingClass):
 			# get the radius to where the line should lead:
 			try:
 				r = self.plasmidstore.radiusOuter[hname]
-			except:
+			except Exception as e:
+				logger.exception("Could not get the radius.")
+				print("Could not get the radius: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 				r = self.radiusI
 					
 			y1 = y - self.lH/2 + 0.3
@@ -1118,7 +1124,7 @@ class drawPlasmid(DNApyBaseDrawingClass):
 	
 	def checkEnzymeCalculations(self):
 		enzmymesOld = self.plasmidstore.enzymes
-		enzymes 	= genbank.restriction_sites
+		enzymes 	= self.genbank.restriction_sites
 		labels = []
 		#print "update Plasmid Enzyme GUI"
 		if enzmymesOld != enzymes:
@@ -1380,8 +1386,10 @@ class PlasmidView2(DNApyBaseDrawingClass):
 	'''
 	This class is intended to glue together the plasmid drawing with control buttons.
 	'''
-	def __init__(self, parent, id):
+	def __init__(self, parent, id, genbank):
 		DNApyBaseClass.__init__(self, parent, id)
+		self.genbank = genbank
+		
 		panel1 = wx.Panel(self)
 		panel2 = wx.Panel(self)
 
@@ -1438,7 +1446,7 @@ class PlasmidView2(DNApyBaseDrawingClass):
 
 		#add the actual plasmid view
 		#self.plasmid_view = PlasmidView(panel2, -1)
-		self.plasmid_view = drawPlasmid(panel2, -1)
+		self.plasmid_view = drawPlasmid(panel2, -1, self.genbank)
 
 		sizer1 = wx.BoxSizer(wx.HORIZONTAL)
 		sizer1.Add(item=self.plasmid_view, proportion=-1, flag=wx.EXPAND)
@@ -1500,16 +1508,3 @@ class MyApp(wx.App):
 		self.SetTopWindow(frame)
 		return True
 
-
-if __name__ == '__main__': #if script is run by itself and not loaded
-
-	genbank.dna_selection = (1, -1)	 #variable for storing current DNA selection
-	genbank.feature_selection = False #variable for storing current feature selection
-
-	assert len(sys.argv) == 2, 'Error, this script requires a path to a genbank file as an argument.'
-	# print('Opening %s' % str(sys.argv[1]))
-
-	genbank.gb = genbank.gbobject(str(sys.argv[1])) #make a genbank object and read file
-
-	app = MyApp(0)
-	app.MainLoop()

@@ -30,8 +30,9 @@
 #
 from __future__ import absolute_import, unicode_literals
 
+import logging
 from wx.lib.pubsub import setupkwargs #this line not required in wxPython2.9.
- 	                                  #See documentation for more detail
+ 									  #See documentation for more detail
 from wx.lib.pubsub import pub
 import wx.stc
 import string
@@ -51,6 +52,8 @@ from . import DNApyBaseClass, output_GUI, featurelist_GUI, plasmid_GUI
 #fix undo/redo on windows
 
 from . import SETTINGS_DIR, ICONS_DIR
+
+logger = logging.getLogger(__name__)
 
 files				 = {}   #list with all configuration files
 files['default_dir'] = SETTINGS_DIR

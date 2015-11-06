@@ -30,6 +30,7 @@
 #
 from __future__ import absolute_import, print_function, unicode_literals
 
+import logging
 import wx
 import os
 import sys
@@ -37,6 +38,7 @@ import math
 
 from . import colcol
 
+logger = logging.getLogger(__name__)
 
 
 class DNApyBaseClass(wx.Panel):

@@ -32,24 +32,25 @@
 
 #TODO
 #nothing at the moment
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 
+import logging
 import ast
 from wx.lib.agw import ultimatelistctrl as ULC
 import wx
 from wx.lib.pubsub import setupkwargs #this line not required in wxPython2.9.
- 	                                  #See documentation for more detail
+ 									  #See documentation for more detail
 from wx.lib.pubsub import pub
 import sys
 import os
 import string
 import copy
 
-from .. import genbank
-
 from . import DNApyBaseClass, featureedit_GUI, colcol
 
 from . import SETTINGS_DIR, ICONS_DIR
+
+logger = logging.getLogger(__name__)
 
 files				 = {}   #list with all configuration files
 files['default_dir'] = SETTINGS_DIR
@@ -62,8 +63,9 @@ class FeatureList(DNApyBaseClass):
 	"""
 	Class for viewing features as a list and buttons for editing the features.
 	"""
-	def __init__(self, parent, id):
+	def __init__(self, parent, id, genbank):
 		wx.Panel.__init__(self, parent)
+		self.genbank = genbank
 		self.feature_list = ULC.UltimateListCtrl(self, id=3001, agwStyle=ULC.ULC_REPORT|ULC.ULC_SINGLE_SEL)
 
 		self.feature_list.InsertColumn(0, "Feature", format=wx.LIST_FORMAT_LEFT, width=200)
@@ -140,7 +142,7 @@ class FeatureList(DNApyBaseClass):
 		#need to figure out how to do this without changing the selection....
 		self.feature_list.DeleteAllItems()
 		item = 0 #for feautrecolor
-		features = genbank.gb.get_all_features()
+		features = self.genbank.gb.get_all_features()
 		if features != None:
 			for entry in features:
 	#			print(entry)
@@ -171,9 +173,11 @@ class FeatureList(DNApyBaseClass):
 				self.feature_list.SetItemBackgroundColour(item, color)	
 				item += 1
 		try:
-			if genbank.feature_selection != None: #focus on the selected feature
+			if self.genbank.feature_selection != None: #focus on the selected feature
 				self.focus_feature_selection()
-		except:
+		except Exception as e:
+			logger.exception("Could not change focus")
+			print("Could not change focus: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			pass
 
 
@@ -183,18 +187,18 @@ class FeatureList(DNApyBaseClass):
 	def ListOnSelect(self, event):	
 		'''Updates selection depending on which feature is chosen'''
 		index = self.feature_list.GetFirstSelected()
-		genbank.feature_selection = copy.copy(index)
+		self.genbank.feature_selection = copy.copy(index)
 
 
 	def ListOnActivate(self, event):
 		'''Updates feature AND DNA selection based on which feature is chosen'''
 		index = self.feature_list.GetFirstSelected()
-		genbank.feature_selection = copy.copy(index)
+		self.genbank.feature_selection = copy.copy(index)
 
-		locations = genbank.gb.get_feature_location(index)
-		start = genbank.gb.get_location(locations[0])[0]
-		finish = genbank.gb.get_location(locations[-1])[1]
-		genbank.dna_selection = copy.copy((start, finish))
+		locations = self.genbank.gb.get_feature_location(index)
+		start = self.genbank.gb.get_location(locations[0])[0]
+		finish = self.genbank.gb.get_location(locations[-1])[1]
+		self.genbank.dna_selection = copy.copy((start, finish))
 		self.update_globalUI()
 
 ######
@@ -206,10 +210,10 @@ class FeatureList(DNApyBaseClass):
 		#make feature and update interface
 		start, finish = self.get_dna_selection()
 		
-		genbank.gb.add_feature(key='misc_feature', qualifiers=['/note=New feature'], location=['%s..%s' % (start, finish)], complement=False, join=False, order=False)
-		genbank.feature_selection = copy.copy(len(genbank.gb.get_all_features())-1)
+		self.genbank.gb.add_feature(key='misc_feature', qualifiers=['/note=New feature'], location=['%s..%s' % (start, finish)], complement=False, join=False, order=False)
+		self.genbank.feature_selection = copy.copy(len(self.genbank.gb.get_all_features())-1)
 
-		dlg = featureedit_GUI.FeatureEditDialog(None, 'New Feature') # creation of a dialog with a title
+		dlg = featureedit_GUI.FeatureEditDialog(None, 'New Feature', genbank=self.genbank) # creation of a dialog with a title
 		dlg.Center()
 		dlg.ShowModal()
 		self.update_ownUI() #update the feature view
@@ -219,8 +223,8 @@ class FeatureList(DNApyBaseClass):
 	def OnDelete(self, event):
 		'''Delete selected feature'''
 		index = self.feature_list.GetFirstSelected()
-		feature = genbank.gb.get_feature(index)
-		genbank.gb.remove_feature(feature)
+		feature = self.genbank.gb.get_feature(index)
+		self.genbank.gb.remove_feature(feature)
 		self.update_ownUI() #update the feature view
 		self.update_globalUI() 
 	
@@ -236,8 +240,8 @@ class FeatureList(DNApyBaseClass):
 	def OnMoveFeatureUp(self, event):
 		'''Move feature up one step'''
 		index = self.feature_list.GetFirstSelected()
-		feature = genbank.gb.get_feature(index)
-		genbank.gb.move_feature(feature, 'u')	
+		feature = self.genbank.gb.get_feature(index)
+		self.genbank.gb.move_feature(feature, 'u')	
 		self.update_ownUI()
 
 		#set highlight, focus and selection
@@ -249,8 +253,8 @@ class FeatureList(DNApyBaseClass):
 	def OnMoveFeatureDown(self, event):
 		'''Move feature up down step'''
 		index = self.feature_list.GetFirstSelected()
-		feature = genbank.gb.get_feature(index)
-		genbank.gb.move_feature(feature, 'd')
+		feature = self.genbank.gb.get_feature(index)
+		self.genbank.gb.move_feature(feature, 'd')
 		self.update_ownUI()
 
 		#set highlight, focus and selection	
@@ -260,14 +264,14 @@ class FeatureList(DNApyBaseClass):
 
 	def OnEditFeature(self, event):
 		'''Edit a feature that is already present'''
-		dlg = featureedit_GUI.FeatureEditDialog(None, 'Edit Feature') # creation of a dialog with a title
+		dlg = featureedit_GUI.FeatureEditDialog(None, 'Edit Feature', genbank=self.genbank) # creation of a dialog with a title
 		dlg.Center()
 		dlg.ShowModal()
 		self.update_ownUI() #update the feature view
 		self.update_globalUI() 
 
 	def focus_feature_selection(self):
-		index = copy.copy(genbank.feature_selection)
+		index = copy.copy(self.genbank.feature_selection)
 
 		self.feature_list.SetItemState(item=index, state=ULC.ULC_STATE_SELECTED, stateMask=wx.LIST_STATE_SELECTED) #for the highlight
 		self.feature_list.Select(index, True) #to select it
@@ -276,7 +280,7 @@ class FeatureList(DNApyBaseClass):
 
 	def update_feature_selection(self, index):
 		'''Updates which feature is selected'''
-		genbank.feature_selection = copy.copy(index)
+		self.genbank.feature_selection = copy.copy(index)
 		if index == None:
 			pass
 		else:
@@ -300,7 +304,9 @@ class FeatureList(DNApyBaseClass):
 		try: 
 			Key = eval(feature['key'])
 							
-		except:
+		except Exception as e:
+			logger.exception("Could not find `key`.")
+			print("Could not find `key`: {}".format(e))   # DEBUG: Remove line when the type of exception is identified
 			Key = grey	
 		
 		complement = feature['complement']
@@ -310,7 +316,7 @@ class FeatureList(DNApyBaseClass):
 
 	def get_dna_selection(self):
 		'''This method is needed to get the dna selection for creating new features.'''
-		return genbank.dna_selection
+		return self.genbank.dna_selection
 
 
 
@@ -318,31 +324,3 @@ class FeatureList(DNApyBaseClass):
 ######################################
 ######################################
 
-
-
-##### main loop
-class MyApp(wx.App):
-	def OnInit(self):
-		frame = wx.Frame(None, -1, title="Feature List", size=(700,500))
-		panel =	FeatureList(frame, -1)
-		frame.Centre()
-		frame.Show(True)
-		self.SetTopWindow(frame)
-		panel.update_ownUI()
-		return True
-
-
-
-if __name__ == '__main__': #if script is run by itself and not loaded	
-
-	genbank.dna_selection = (1, -1)	 #variable for storing current DNA selection
-	genbank.feature_selection = False #variable for storing current feature selection
-
-	assert len(sys.argv) == 2, 'Error, this script requires a path to a genbank file as an argument.'
-	print('Opening %s' % str(sys.argv[1]))
-
-	genbank.gb = genbank.gbobject(str(sys.argv[1])) #make a genbank object and read file
-
-
-	app = MyApp(0)
-	app.MainLoop()
